@@ -1,0 +1,13 @@
+MANIFEST.in
+README.md
+setup.py
+bin/call_diff.py
+bin/callhub.py
+src/hichub/__init__.py
+src/hichub.egg-info/PKG-INFO
+src/hichub.egg-info/SOURCES.txt
+src/hichub.egg-info/dependency_links.txt
+src/hichub.egg-info/entry_points.txt
+src/hichub.egg-info/requires.txt
+src/hichub.egg-info/top_level.txt
+tests/chr10_test.bed
