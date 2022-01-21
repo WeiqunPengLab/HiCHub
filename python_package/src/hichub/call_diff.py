@@ -342,7 +342,7 @@ def run(argv):
 	print ("Background Condition: %s" % col_back)
 	print ("Resolution %i" % resolution)
 	print ("Pvalue cutoff for output (diff hub) is: %s" % pvalue)
-	print ("logFC for qualified difference" % logFC)
+	print ("FC for qualified difference" % logFC)
 	print ("cut-off value for sum of row counts" % cut_off)
 	print ("Number of threads used is: %i" % num_threads)
 	print ("End of Summary.")
@@ -366,7 +366,7 @@ def main(argv):
 			dest="back_name", help="Name of condition as background.", metavar="<str>")
 	parser.add_option("-r", "--resolution", action="store", type="int",
 		dest="res", help="Resolution of HiC txt", metavar="<int>")
-	parser.add_option("-d", "--logFC", action="store", type="float", default = 1.0,
+	parser.add_option("-d", "--FC", action="store", type="float", default = 1.0,
 		dest="foldchange", help="Optional: logFC to evaluate qualified difference", metavar="<float>")
 	parser.add_option("-c", "--cut_off", action="store", type="float", default = 10,
 		dest="cut_off_value", help="cut-off value for sum of row counts", metavar="<float>")
@@ -398,7 +398,7 @@ def main(argv):
 	print ("Background Condition: %s" % col_back)
 	print ("Resolution %i" % resolution)
 	print ("Pvalue cutoff for output (diff hub) is: %s" % pvalue)
-	print ("logFC for qualified difference is: %s" % logFC)
+	print ("FC for qualified difference is: %s" % logFC)
 	print ("cut-off value for sum of row counts is %s" % cut_off)
 	print ("Number of threads used is: %i" % num_threads)
 	print ("End of Summary.")
