@@ -83,7 +83,7 @@ usage: hichub diff [-h] -i <file> -f <str> -b <str> -r <int> [-d <float>] [-c <f
 hichub diff --help 
 Input Format: HiC Interaction in txt format. Example of test data can be found in ~/test_data
 And the output can be found at working directory: 
-(Demo output is: 354_DKO_na_WT_na_specific_regions.bed or 318_WT_na_DKO_na_specific_regions.bed)
+(Demo output is: 6_1.0_DKO_na_WT_na_specific_regions.bed or 4_1.0_WT_na_DKO_na_specific_regions.bed)
 ```
 
 convert:
