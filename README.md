@@ -69,7 +69,17 @@ optional arguments:
 
 diff:
 ```
-usage: hichub diff [-h] -i <file> -f <str> -b <str> -r <int> [-p <float>] [-t <int>]
+usage: hichub diff [-h] -i <file> -f <str> -b <str> -r <int> [-d <float>] [-c <float>] [-p <float>] [-t <int>]
+
+-i: Path to Input HiC file in txt format.
+-f: Name of condition as foreground.
+-b: Name of condition as background.
+-r: Resolution if Hic .txt
+-d: Foldchange to evaluate difference, default 1.0.
+-c: Cut-off value to remove low abundance interaction pairs, default 10.0.
+-p: Pvalue cutoff for output (diff hub), default 1e-5.
+-t: Number of threads to run, default 1.
+
 hichub diff --help 
 Input Format: HiC Interaction in txt format. Example of test data can be found in ~/test_data
 And the output can be found at working directory: 
