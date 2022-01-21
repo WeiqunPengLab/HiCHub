@@ -367,11 +367,11 @@ def main(argv):
 	parser.add_option("-r", "--resolution", action="store", type="int",
 		dest="res", help="Resolution of HiC txt", metavar="<int>")
 	parser.add_option("-d", "--FC", action="store", type="float", default = 1.0,
-		dest="foldchange", help="Optional: logFC to evaluate qualified difference", metavar="<float>")
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0", metavar="<float>")
 	parser.add_option("-c", "--cut_off", action="store", type="float", default = 10,
-		dest="cut_off_value", help="cut-off value for sum of row counts", metavar="<float>")
+		dest="cut_off_value", help="cut-off value for sum of row counts, default=10", metavar="<float>")
 	parser.add_option("-p", "--pvalue", action="store", type="float", default =0.00001,
-		dest="pvalue", help="Optional: pvalue cutoff for output (diff hub)", metavar="<float>")
+		dest="pvalue", help="Optional: pvalue cutoff for output (diff hub), default=1e-5", metavar="<float>")
 	parser.add_option("-t", "--num_threads", action="store", type="int", default =1,
 		dest="thread", help="Optional: Number of threads to run, default=1", metavar="<int>")
 
