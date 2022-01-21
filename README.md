@@ -5,7 +5,7 @@ Latest updated on 01/21/2022,
 
 
 <br><br>
-<img src="image/Hub_Myb.PNG" width="800">
+<img src="image/Hub_Myb.png" width="800">
 <br><br>
 
 
