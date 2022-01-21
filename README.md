@@ -38,7 +38,7 @@ scipy
 
 ## Installation Guide
 Recommend to use bioconda for installing.
-Create the environment from the environment_hichub.yml(Can be found in this repository) file:
+Create the environment from the environment_hichub.yml (Can be found in this repository) file:
 ```
 conda env create -f environment_hichub.yml
 python3 -m pip install hichub --user
