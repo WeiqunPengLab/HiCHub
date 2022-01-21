@@ -1,5 +1,5 @@
 # NOTE: For Paper Review, please follow the instruction below:
-Latest updated on 07/04/2021,
+Latest updated on 01/21/2022,
 
 # Comprehensive Network Analysis for HiC
 
