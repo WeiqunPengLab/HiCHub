@@ -63,20 +63,24 @@ def LOESS_Norm_df (_df, _col1, _col2):
     ## this is a similar approach as LOESS Normalization
     df_test = _df
     df_test = Add_pesudo_count(df_test, 1, _col1, _col2)
-    n_bins = 1000
-    df_test['A'] = 0.5*(np.log2(df_test[_col1]) + np.log2(df_test[_col2])).rank(method='first') ## A is the value for MA plot 
+    n_bins = 100
+    df_test['A'] = 0.5*(np.log2(df_test[_col1]) + np.log2(df_test[_col2])) ## A is the value for MA plot 
     
-    df_test['label'] = pd.qcut(df_test['A'].values, q=np.arange(0,1+1/n_bins, 1/n_bins),
-                               labels = np.arange(0,n_bins))#, duplicates='drop')
-    df_group = df_test.groupby('label')
+    A_min = df_test['A'].min()
+    A_max = df_test['A'].max()
+
+    x = np.arange(A_min, A_max, (A_max-A_min)/n_bins)
+
     df_out = pd.DataFrame()
-    for df_for_norm in df_group:
-        df_bbb = df_for_norm[1]
+    for i in range(len(x)-1):
+        df_bbb = df_test[df_test['A']>=x[i]]
+        df_bbb = df_bbb[df_bbb['A']<x[i+1]]
         sum_1 = df_bbb[_col1].sum(axis=0)
         sum_2 = df_bbb[_col2].sum(axis=0)
         df_bbb[_col2] = round(df_bbb[_col2]/sum_2*sum_1, 2)
        
         df_out = df_out.append(df_bbb)
+        df_out = df_out.sort_index()
     return df_out.sort_index()
 
 def Convert_Loops_to_Graph(_df_hic, _weight_col):
