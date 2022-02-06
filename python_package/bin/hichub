@@ -32,6 +32,9 @@ def main():
 	print("  {test,diff,convert}  sub-command help")
 	print("    test               Output for test parser")
 	print("    diff               Parser for diff hubs")
+    
+	print("    plot               Parser for plo clusters")
+    
 	print("    convert            Convert multi .hic to txt format --> Format should be:")
 	print("                       #chr bin1 bin2 Count")
 	print("optional arguments:")
@@ -68,6 +71,15 @@ def main():
 		print('-' * 50)
 		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
 
+	elif subcommand == "plot":
+		logging.info("Beginning plot clusters")
+		print('-' * 50)
+		start_time = time.time()
+		from hichub.plot_cluster import run
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
 
 	elif subcommand == "test":
 		logging.info("Beginning Test run")
@@ -101,6 +113,8 @@ def prepare_argparser():
 	add_diff_parser( subparsers )
 	# command for 'convert'
 	add_convert_parser( subparsers )
+    # command for 'plot'
+	add_plot_parser( subparsers )
 	
 	return parser
 
@@ -138,13 +152,38 @@ def add_convert_parser( subparsers ):
 		dest="file_name", help="Name of File. Delimiter ',', for example 'file1,file2' ", metavar="<str>")
 		
 	parser_tem_group.add_argument("-l", "--file_label", action="store", type=str, required = True,
-		dest="res", help="Name of File.Delimiter ',', for example 'label1,label2'", metavar="<str>")
+		dest="file_label", help="Name of File.Delimiter ',', for example 'label1,label2'", metavar="<str>")
 		
 	parser_tem_group.add_argument("-r", "--resolution", action="store", type=int, required = True,
 		dest="res", help="Resolution of HiC txt", metavar="<int>")
 	
 	return 
 
+
+def add_plot_parser( subparsers ):
+	"""
+	Module for Diff Hubs argument parsers.
+	"""
+	parser_plot = subparsers.add_parser("plot", help = "Parser for plot clusters")
+	## detail in subparser
+	plot_parser_group = parser_plot.add_argument_group( "general arguments" )
+	
+	plot_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
+		dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
+	
+	plot_parser_group.add_argument("-c", "--cluster", action="store", type="string",
+			dest="cluster_path", help="Path to cluster file from hichub", metavar="<str>")
+		
+	plot_parser_group.add_argument("-n", "--gene name", action="store", type="string",
+			dest="gene_name", help="Name of gene as input", metavar="<str>")
+		
+	plot_parser_group.add_argument("-f", "--foreground_name", action="store", type="string",
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+	
+	plot_parser_group.add_argument("-b", "--background_name", action="store", type="string",
+			dest="back_name", help="Name of condition as background.", metavar="<str>")
+	
+	return
 
 def add_diff_parser( subparsers ):
 	"""
@@ -172,7 +211,7 @@ def add_diff_parser( subparsers ):
 	diff_parser_group.add_argument("-t", "--num_threads", action="store", type=int, required = False,
 		default=1, dest="thread", help="Optional: Number of threads to run, default=1", metavar="<int>")
 	
-	return 
+	return
 
 
 def elapsed_time(start_time, end_time):
