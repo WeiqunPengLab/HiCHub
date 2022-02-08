@@ -37,16 +37,18 @@ scipy
 ```
 
 ## Installation Guide
+
+```
+Quick install: python -m pip install git+https://github.com/WeiqunPengLab/hic_hub_test
+```
+
+Alternative method of installation:
 Recommend to use bioconda for installing.
 Create the environment from the environment_hichub.yml (Can be found in this repository) file:
 ```
 conda env create -f environment_hichub.yml
 python3 -m pip install hichub --user
 python3 -m pip install numpy pandas pybedtools python-igraph scipy
-```
-
-```
-Quickly installed: python -m pip install git+https://github.com/WeiqunPengLab/hic_hub_test
 ```
 
 ```
