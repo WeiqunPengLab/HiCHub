@@ -102,6 +102,25 @@ chr10:95130000-95290000 chr10:95130000-95290000 9.80623027538454
 chr10:18970000-19160000 chr10:18970000-19160000 9.288099829570816
 ```
 
+find:
+Find gene in which hub.
+```
+usage: hichub find [-h] -i <input file path> -f <str> -l <str> -n <gene name>
+-i: Path to store all required input files.
+-f: File names for different hubs, the output files for 'diff' call hubs. <file_name_1,file_name_2,...>
+-l: The label for your input files. <condition_1, condition_2,...>
+-n：The gene's name that you want to find in hubs. Examples: for human, LSR, SOX2, SERPINB8
+```
+
+plot:
+Plot community igraph-plot for the community that contain the gene you want to find in your hubs.
+```
+usage: hichub plot [-h] -i <input path for your .hic file> -c <input cluster files form 'diff'> -n <gene name> -f <str> -b <str>
+-i: Path to Input HiC file in txt format.
+-f: Name of condition as foreground.
+-b: Name of condition as background.
+-n: Gene name that you want to plot.
+-c: Path to Input cluster file calcuated from 'diff'.
 
 
 ## Built With
