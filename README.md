@@ -69,6 +69,7 @@ optional arguments:
 ```
 
 diff:
+Find hichubs for different cell conditions of the same specious.
 ```
 usage: hichub diff [-h] -i <file> -f <str> -b <str> -r <int> [-d <float>] [-c <float>] [-p <float>] [-t <int>]
 
@@ -88,7 +89,7 @@ And the output can be found at working directory:
 ```
 
 convert:
-Convert .hic to required input format
+Convert (.hic) files to required input format
 ```
 usage: hichub convert [-h] -i <file> [-n <str>] -f <str> -l <str> -r <int>
 
