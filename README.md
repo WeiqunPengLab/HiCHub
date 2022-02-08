@@ -88,7 +88,7 @@ And the output can be found at working directory:
 ```
 
 convert:
-%% Convert .hic to required input format
+Convert .hic to required input format
 ```
 usage: hichub convert [-h] -i <file> [-n <str>] -f <str> -l <str> -r <int>
 
