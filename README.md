@@ -121,7 +121,7 @@ usage: hichub plot [-h] -i <input path for your .hic file> -c <input cluster fil
 -b: Name of condition as background.
 -n: Gene name that you want to plot.
 -c: Path to Input cluster file calcuated from 'diff'.
-
+```
 
 ## Built With
 
