@@ -32,8 +32,8 @@ def main():
 	print("  {test,diff,convert}  sub-command help")
 	print("    test               Output for test parser")
 	print("    diff               Parser for diff hubs")
-    
-	print("    plot               Parser for plo clusters")
+	print("    find               Parser for find gene in hubs")
+	print("    plot               Parser for plot clusters")
     
 	print("    convert            Convert multi .hic to txt format --> Format should be:")
 	print("                       #chr bin1 bin2 Count")
@@ -81,6 +81,16 @@ def main():
 		print('-' * 50)
 		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
 
+	elif subcommand == "find":
+		logging.info("Beginning find gene hubs")
+		print('-' * 50)
+		start_time = time.time()
+		from hichub.find_gene import run
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
+
 	elif subcommand == "test":
 		logging.info("Beginning Test run")
 		print('-' * 50)
@@ -115,6 +125,8 @@ def prepare_argparser():
 	add_convert_parser( subparsers )
     # command for 'plot'
 	add_plot_parser( subparsers )
+    # command for 'find gene'
+	add_find_parser( subparsers )
 	
 	return parser
 
@@ -171,17 +183,40 @@ def add_plot_parser( subparsers ):
 	plot_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
 		dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
 	
-	plot_parser_group.add_argument("-c", "--cluster", action="store", type="string",
-			dest="cluster_path", help="Path to cluster file from hichub", metavar="<str>")
+	plot_parser_group.add_argument("-c", "--cluster", action="store", type=str, required = True,
+		dest="cluster_path", help="Path to cluster file", metavar="<file>")
 		
-	plot_parser_group.add_argument("-n", "--gene name", action="store", type="string",
-			dest="gene_name", help="Name of gene as input", metavar="<str>")
+	plot_parser_group.add_argument("-n", "--gene name", action="store", type=str, required = True,
+		dest="gene_name", help="Name of gene.", metavar="<str>")
 		
-	plot_parser_group.add_argument("-f", "--foreground_name", action="store", type="string",
-			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+	plot_parser_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
+		dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+		
+	plot_parser_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
+		dest="back_name", help="Name of condition as background.", metavar="<str>")
 	
-	plot_parser_group.add_argument("-b", "--background_name", action="store", type="string",
-			dest="back_name", help="Name of condition as background.", metavar="<str>")
+	return
+
+def add_find_parser( subparsers ):
+	"""
+	Module for find gene in Hubs argument parsers.
+	"""
+	parser_tem = subparsers.add_parser("find", help = "Find gene in hubs.")
+	## detail in subparser
+	parser_tem_group = parser_tem.add_argument_group( "general arguments" )
+	
+	parser_tem_group.add_argument("-i", "--in", action="store", type=str, required = True,
+		dest="input_path", help="Path to Input HiC file in .hic format", metavar="<file>")
+	
+	parser_tem_group.add_argument("-n", "--gene", action="store", type=str, 
+		dest="gene_name", help="Name of gene.", metavar="<str>")
+		
+	parser_tem_group.add_argument("-f", "--file_name", action="store", type=str, required = True,
+		dest="file_name", help="Name of File. Delimiter ',', for example 'file1,file2' ", metavar="<str>")
+		
+	parser_tem_group.add_argument("-l", "--file_label", action="store", type=str, required = True,
+		dest="file_label", help="Name of File.Delimiter ',', for example 'label1,label2'", metavar="<str>")
+
 	
 	return
 
