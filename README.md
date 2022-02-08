@@ -44,6 +44,11 @@ conda env create -f environment_hichub.yml
 python3 -m pip install hichub --user
 python3 -m pip install numpy pandas pybedtools python-igraph scipy
 ```
+
+```
+Quickly installed: python -m pip install git+https://github.com/WeiqunPengLab/hic_hub_test
+```
+
 ```
 https://bioconda.github.io/user/install.html
 ```
