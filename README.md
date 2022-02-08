@@ -59,9 +59,10 @@ hichub -- A toolset to detect and analyze differential Hubs
 positional arguments:
   {test,diff,convert}  sub-command help
     test               Output for test parser
+    convert            Convert multi .hic to txt format --> Format should be: #chr bin1 bin2 Count
     diff               Parser for diff hubs
-    convert            Convert multi .hic to txt format --> Format should be:
-                       #chr bin1 bin2 Count
+    find               Find gene in which hubs
+    plot               Draw community plot to find gene in hubs
 optional arguments:
   -h, --help           show this help message and exit
   -v, --version        show program's version number and exit
