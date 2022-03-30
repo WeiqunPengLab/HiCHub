@@ -14,16 +14,142 @@
 import pandas as pd
 import numpy as np
 import igraph as ig
+import pybedtools
 from scipy import stats
 from optparse import OptionParser
 import sys, os, multiprocessing
 import random
+import copy
 #from gooey import Gooey
 
 random.seed(5)
 
 #@Gooey
 ####################################################################################
+def revise1():
+    test = pd.read_csv('cluster.txt', sep='\t', names=['chr','node','cluster'], dtype={'chr':str,'start':int,'end':int})
+
+    test['#chr'] = 'chr' + test['chr']
+    test['start'] = test['node']
+    test['end'] = test['node'] + 10000
+
+    test = test.loc[:,['#chr','start','end','cluster']]
+
+    test.to_csv('cluster_combine.bed', sep='\t', index=None)
+
+    test1 = pd.read_csv('DNase.bed', sep='\t', dtype={'chr':str,'start':int,'end':int})
+
+    test1['mid'] = (0.5*(test1['start'] + test1['end'])).astype(int)
+
+    test1['start'] = test1['mid']
+    test1['end'] = test1['mid']+1
+
+    test1 = test1.loc[:,['#chr','start','end','logFC']]
+
+    test1.to_csv('ATAC_combine.bed', sep='\t', index=None)
+    return None
+
+def revise2():
+    DNase = pybedtools.BedTool('ATAC_combine.bed')
+    promoter = pybedtools.BedTool('promoter.bed')
+    cluster = pybedtools.BedTool('cluster_combine.bed')
+
+    c1 = promoter.intersect(cluster, wa=True, wb=True)
+
+    c1.saveas('P_C.bed')
+
+    p = pd.read_csv('P_C.bed', sep='\t', names=['#chr_x','start_x','end_x','gene_id','#chr_y','start_y','end_y','cluster_y'])
+    c = pd.read_csv('cluster_combine.bed', sep='\t')
+
+    p = p.loc[:,['#chr_y','start_y','end_y','cluster_y','gene_id']]
+
+    c = c.merge(p, left_on='start', right_on='start_y', how='outer')
+
+    c = c.loc[:,['#chr','start','end','cluster','gene_id']]
+
+    c.to_csv('cluster_with_promoter.bed', sep='\t', index=None)
+    return None
+
+def revise3():
+    test = pd.read_csv('ATAC_combine.bed', sep='\t')
+
+    test['signal'] = test['logFC'].apply(lambda x: 'up' if x >= 0 else('down'))
+    test['start'] = test['start'].astype(int)
+    test['end'] = test['end'].astype(int)
+    test = test.loc[:,['#chr','start','end','signal']]
+
+    test.to_csv('ATAC_signal.bed',sep='\t',index=None)
+    return None
+
+def revise4():
+    test = pd.read_csv('cluster_with_promoter.bed', sep='\t').fillna('0')
+    group = test.groupby('start')
+
+    output = pd.DataFrame(columns=['#chr','start','end','cluster','gene_id'])
+    for sub_group in group:
+        test_name = sub_group[0]
+        df_test = sub_group[1]
+        #print(df_test)
+        for i in range(len(df_test)):
+            if i >0: 
+                df_test.iloc[0,4] = df_test.iloc[0,4] + ',' + df_test.iloc[i,4]
+        output = output.append(df_test)
+
+    output.drop_duplicates(subset=['#chr','start','end'],keep='first',inplace=True)
+    output.to_csv('cluster_promoter_final.bed', sep='\t', index=None) 
+    return None
+
+def revise5():
+    DNase = pybedtools.BedTool('ATAC_signal.bed')
+    cluster = pybedtools.BedTool('cluster_promoter_final.bed')
+
+    c1 = DNase.intersect(cluster, wa=True, wb=True)
+
+    c1.saveas('D_C.bed')
+
+    p = pd.read_csv('D_C.bed', sep='\t', names=['#chr_x','start_x','end_x','signal','#chr_y','start_y','end_y','cluster_y','gene_id_t'])
+    p.drop_duplicates(subset=['#chr_y','start_y','end_y'],keep='first',inplace=True)
+    c = pd.read_csv('cluster_promoter_final.bed', sep='\t')
+
+    p = p.loc[:,['#chr_y','start_y','end_y','cluster_y','gene_id_t','signal']]
+
+    c = c.merge(p, left_on='start', right_on='start_y', how='outer')
+
+    c = c.loc[:,['#chr','start','end','cluster','gene_id','signal']]
+
+    c = c.fillna(0)
+
+    c.to_csv('cluster_final.bed', sep='\t', index=None)
+    return c
+
+def revise(col_fore):
+	test = pd.read_csv('cluster_'+col_fore+'.txt', sep='\t',names=['#chr','bins','cluster'], dtype={'#chr':str})
+    #test = test[test['#chr'] == '1']
+	output = pd.DataFrame(columns=['#chr','start','end','cluster','gene_id','signal'])
+	group = test.groupby('#chr')
+
+	for sub_group in group:
+		df_test = sub_group[1]
+		df_test.to_csv('cluster.txt',sep='\t',index=None,header=None)
+		revise1()
+		revise2()
+		revise3()
+		revise4()
+		x = revise5()
+		output = output.append(x,ignore_index=None)
+	output.to_csv('cluster_final_'+col_fore+'.txt',sep='\t',index=None)
+        
+	os.remove('ATAC_combine.bed')
+	os.remove('ATAC_signal.bed')
+	os.remove('cluster.txt')
+	os.remove('cluster_combine.bed')
+	os.remove('cluster_final.bed')
+	os.remove('cluster_promoter_final.bed')
+	os.remove('cluster_with_promoter.bed')
+	os.remove('D_C.bed')
+	os.remove('P_C.bed')
+	os.remove('cluster_'+col_fore+'.txt')
+	return None    
 ## FUNCTIONS
 ### FUNCTION
 def Norm_df_hic(_df_interaction,  _col_fore, _col_back, _resolution):
@@ -223,6 +349,10 @@ def Return_Pvalue_For_Given_Graph(_df_region, _resolution, _matrix):
     return pd.DataFrame(data=pvalue_region, columns=['reg1', 'reg2', '-log10(pvalue)']).sort_values('-log10(pvalue)', ascending=False)
 
 def Main_For_Diff_Regions(df_hic, _col_fore, _col_back,  _resolution, _pvalue, _logFC):
+    data_1 = copy.deepcopy(df_hic)
+    data_ori = revise_data_format(data_1, _col_fore, _col_back)
+
+    
     _gapsize=2
     logfc_cutoff=_logFC
     cut_pvalue=-np.log10(_pvalue)
@@ -256,10 +386,61 @@ def Main_For_Diff_Regions(df_hic, _col_fore, _col_back,  _resolution, _pvalue, _
                 Diff_matrix = Return_Sorted_Adjacency_Matrix(graph_tem, 'diff')
                 Diff_matrix = Diff_matrix.where(np.tril(np.ones(Diff_matrix.shape)).astype(bool))
                 df_out = df_out.append(Return_Pvalue_For_Given_Graph(df_hubs, _resolution, Diff_matrix))
+                
+    #data_ori = revise_data_format(df_hic, _col_fore, _col_back)
+    df_test = copy.deepcopy(df_out)
+    p_value_new = re_calculate_pvalue(df_test, data_ori)
+    #print(p_value_new)
+    df_out.loc[:,'-log10(pvalue)_new'] = np.round(-np.log10(p_value_new),3)
+    print(df_out)
+    df_out['-log10(pvalue)'] = np.round(df_out['-log10(pvalue)'],3)
     df_out = df_out.sort_values(by='-log10(pvalue)', ascending=False)
-    df_out = df_out[df_out['-log10(pvalue)']>cut_pvalue]
+    df_out = df_out[df_out['-log10(pvalue)_new']>cut_pvalue]
     df_out.to_csv(_col_back+'_'+_col_fore+'_specific_regions.bed', sep='\t', mode='a', header=False, index=None)
     return structure
+
+def revise_data_format(df_hic, _col_fore, _col_back):
+    data_ori = df_hic
+    data_ori['diff'] = data_ori[_col_fore] - data_ori[_col_back]
+    data_ori.loc[:,'#chr'] = data_ori.iloc[:,0].astype(str).replace('chr','')
+    data_ori = data_ori.loc[:,['#chr1','x1','y1','log_FC','diff']]
+    return data_ori
+
+def re_calculate_pvalue(_df,data):
+    test = _df
+    test['chr_x'] = test['reg1'].str.split(':', expand = True)[0]
+    test['bin1_x'] = test['reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    test['bin2_x'] = test['reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+
+    test['chr_y'] = test['reg2'].str.split(':', expand = True)[0]
+    test['bin1_y'] = test['reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    test['bin2_y'] = test['reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+
+    test = test.loc[:,['chr_x','bin1_x','bin2_x','chr_y','bin1_y','bin2_y']]
+    p_value_new = count_number(test, data)
+    return p_value_new
+    
+def count_number(df1,test):
+    pvalue_box = []
+    region = df1
+    for i in range(len(df1)):
+        data = test
+        if region.iloc[i,1]<=region.iloc[i,4]:        
+            data = data[data['x1']>=region.iloc[i,1]]
+            data = data[data['x1']<=(region.iloc[i,2])]
+            data = data[data['y1']>=region.iloc[i,4]]
+            data = data[data['y1']<=(region.iloc[i,5])]
+        else:
+            data = data[data['x1']>=region.iloc[i,4]]
+            data = data[data['x1']<=(region.iloc[i,5])]
+            data = data[data['y1']>=region.iloc[i,1]]
+            data = data[data['y1']<=(region.iloc[i,2])]
+        
+        w, pvalue =stats.wilcoxon(data['diff'], zero_method='zsplit', alternative='greater', correction=True, mode='approx')
+        pvalue_box.append(pvalue)
+        
+
+    return pvalue_box
 
 def multi_task(_chr_name, _df_chr, _col_fore, _col_back,  _resolution, _pvalue, _logFC):
     col_fore = _col_fore
@@ -290,8 +471,20 @@ def cut_off_value(_df_test, _value, _col1, _col2):
 def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resolution, _pvalue, _num_threads, _logFC, _cut_off):
     if True:
         PATH_interaction = _PATH_interaction
-        df_tem = pd.read_csv(PATH_interaction, sep='\t', dtype = {'#chr':str})
-        df_tem = df_tem[df_tem[_col_fore]+df_tem[_col_back]>= _cut_off]
+        
+        test = pd.read_csv(PATH_interaction, sep='\t', dtype={'#chr':str}, iterator=True, chunksize=100000)
+
+
+        out = pd.DataFrame()
+        for chunk in test:
+            chunk = chunk.fillna(0)
+            chunk = chunk[chunk['H1ESC']+chunk['HFFc6'] > _cut_off]
+            out = out.append(chunk)
+        
+        df_tem = out
+        
+        #df_tem = df_tem[df_tem['#chr'] == '1']
+
         logFC = _logFC
         col_fore=_col_fore
         col_back=_col_back
@@ -316,11 +509,12 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
             
         print('All subprocesses done.')
 
-        col_out = [ 'reg1', 'reg2' ,'-log10(pvalue)']
+        col_out = [ 'reg1', 'reg2' ,'-log10(pvalue)','-log10(pvalue)_new']
         df_output = pd.read_csv(col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', header=None, names=col_out)
         df_output.sort_values(by='-log10(pvalue)', ascending=False).to_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', mode='a', header=True, index=None)
         
         os.remove(col_back+'_'+col_fore+'_specific_regions.bed')
+        
     return None
 ### End of Visulization
 ####################################################################################
@@ -354,7 +548,9 @@ def run(argv):
 	
 #### Main 
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off)
+	revise(col_fore)
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off)
+	revise(col_back)
 
 	print(" ")
 	return None
@@ -412,8 +608,11 @@ def main(argv):
 
 #### Main 
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off)
+	revise(col_fore)    
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off)
+	revise(col_back) 
 
+	
 	print(" ")
 #### First GeneBoydy
 

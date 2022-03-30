@@ -97,10 +97,11 @@ def Multi_Input_Matrix_to_Txt(_Norm, _hics, _conds, _resolution):
         if(chr_idx not in {'ALL','All', 'chrM','M'}):
             df_hic = pd.DataFrame(columns=['bin1','bin2'])
             for cond, hic in zip(_conds, _hics):
-                df_hic_tem = HiC_Matrix_to_Txt(_Norm, hic, cond, _resolution, chr_idx, 3)
+                df_hic_tem = HiC_Matrix_to_Txt(_Norm, hic, cond, _resolution, chr_idx, 0)
                 df_hic = df_hic.merge(df_hic_tem, on=['bin1','bin2'], how='outer')
                 
             df_hic.insert(loc=0, column='#chr', value=chr_idx)
+            df_hic = df_hic.fillna(0)
             df_hic.to_csv(Out_Name, sep='\t', mode='a', header=False, index=None)
     return None
 
