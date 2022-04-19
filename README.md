@@ -139,10 +139,8 @@ Please read (https:xx) for details on our code of conduct, and the process for s
 
 ## Authors
 
-* *Xiang Li  
+* Xiang Li, Shuang Yuan, Shaoqi Zhu  
 
-## Contributors
-* Shuang Yuan
 ## License
 
 #This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
