@@ -38,7 +38,7 @@ scipy
 ## Installation Guide
 
 ```
-Quick install: python -m pip install git+https://github.com/WeiqunPengLab/hic_hub_test
+Quick install: python -m pip install git+https://github.com/WeiqunPengLab/HicHub_installation
 ```
 
 Alternative method of installation:
