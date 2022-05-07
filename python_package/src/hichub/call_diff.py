@@ -20,6 +20,7 @@ from optparse import OptionParser
 import sys, os, multiprocessing
 import random
 import copy
+from statsmodels.stats.multitest import multipletests
 #from gooey import Gooey
 
 random.seed(5)
@@ -511,7 +512,17 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
 
         col_out = [ 'reg1', 'reg2' ,'-log10(pvalue)','-log10(pvalue)_new']
         df_output = pd.read_csv(col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', header=None, names=col_out)
-        df_output.sort_values(by='-log10(pvalue)', ascending=False).to_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', mode='a', header=True, index=None)
+        df_output.sort_values(by='-log10(pvalue)_new', ascending=False).to_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', mode='a', header=True, index=None)
+        
+        df_out = pd.read_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t')
+        df_out_p = pow(10, -df_out['-log10(pvalue)_new'])
+        df_out_p_new = multipletests(df_out_p, method='fdr_bh', is_sorted=False, returnsorted=False)
+        df_out['FDR'] = -np.log10(df_out_p_new[1])
+        df_out['-log10(pvalue)'] = df_out['-log10(pvalue)_new']
+        df_out = df_out.loc[:,['reg1','reg2','-log10(pvalue)','FDR']]
+        
+        os.remove(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed')
+        df_out.to_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', index=None, header=True)
         
         os.remove(col_back+'_'+col_fore+'_specific_regions.bed')
         
