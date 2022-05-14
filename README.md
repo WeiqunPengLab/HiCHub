@@ -41,8 +41,7 @@ statsmodels
 
 ```
 Quick install: python -m pip install git+https://github.com/WeiqunPengLab/HicHub_installation
-If you face straw version problem, please install hic-straw=0.0.6, use: pip install hic-straw==0.0.6
-Please install statsmodels: conda install -c conda-forge statsmodels (for conda user) or python -m pip install statsmodels (for pip user)
+
 ```
 
 Alternative method of installation:
