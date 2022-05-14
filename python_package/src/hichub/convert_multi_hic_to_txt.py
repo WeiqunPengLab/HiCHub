@@ -16,7 +16,8 @@ import os
 import struct
 from optparse import OptionParser
 import sys
-import straw
+#import straw
+import hicstraw
 ####################################################################################
 ## FUNCTIONS
 def readcstr(f):
@@ -79,8 +80,15 @@ def read_header(req):
     return chrs, resolutions, metadata
     
 def HiC_Matrix_to_Txt(_NORM, _hic, _cond, _resolution, _chr, _cut_off):
-    result = straw.straw(_NORM, _hic, _chr, _chr, 'BP', _resolution)
-    df_tem = pd.DataFrame(data={'bin1':result[0],'bin2':result[1], _cond:result[2]})  
+    result = hicstraw.straw('observed', _NORM, _hic, _chr, _chr, 'BP', _resolution)
+    x=[]
+    y=[]
+    c=[]
+    for i in range(len(result)):
+        x.append(result[i].binX)
+        y.append(result[i].binY)
+        c.append(result[i].counts)
+    df_tem = pd.DataFrame(data={'bin1':x,'bin2':y, _cond:c})  
     df_tem = df_tem[df_tem.loc[:, _cond] > _cut_off]
     #df_tem.loc[:, _cond] = round(10**6*df_tem.loc[:, _cond] /  df_tem[(df_tem.bin1==df_tem.bin2)].loc[:, _cond].sum(),2)
     return df_tem
