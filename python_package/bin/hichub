@@ -29,11 +29,11 @@ def main():
 	print("usage: hichub [-h] [-v] {test,diff,convert} ...")
 	print("hichub -- A toolset to detect and analyze differential Hubs")
 	print("positional arguments:")
-	print("  {test,diff,convert}  sub-command help")
-	print("    test               Output for test parser")
+	print("  {convert, diff, associate, find, plot}  sub-command help")
 	print("    diff               Parser for diff hubs")
 	print("    find               Parser for find gene in hubs")
 	print("    plot               Parser for plot clusters")
+	print("    asso               Parser for associate clusters with promoter")
     
 	print("    convert            Convert multi .hic to txt format --> Format should be:")
 	print("                       #chr bin1 bin2 Count")
@@ -70,12 +70,22 @@ def main():
 		end_time = time.time()
 		print('-' * 50)
 		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
+    
+	elif subcommand == "asso":
+		logging.info("Beginning associate cluster with promoters")
+		print('-' * 50)
+		start_time = time.time()
+		from hichub.associate import run
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
 
 	elif subcommand == "plot":
 		logging.info("Beginning plot clusters")
 		print('-' * 50)
 		start_time = time.time()
-		from hichub.plot_cluster import run
+		from hichub.plot import run
 		run( args )
 		end_time = time.time()
 		print('-' * 50)
@@ -91,15 +101,6 @@ def main():
 		print('-' * 50)
 		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
 
-	elif subcommand == "test":
-		logging.info("Beginning Test run")
-		print('-' * 50)
-		start_time = time.time()
-		from hichub.test import run
-		run( )
-		end_time = time.time()
-		print('-' * 50)
-		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
 	return argparser
 
 
@@ -117,14 +118,14 @@ def prepare_argparser():
 	help='sub-command help' 
 	)
 
-	# command for 'test'
-	add_test_parser( subparsers )
 	# command for 'diff'
 	add_diff_parser( subparsers )
 	# command for 'convert'
 	add_convert_parser( subparsers )
     # command for 'plot'
 	add_plot_parser( subparsers )
+    # command for 'asso'
+	add_asso_parser( subparsers )
     # command for 'find gene'
 	add_find_parser( subparsers )
 	
@@ -134,16 +135,25 @@ def add_outdir_option( parser ):
 	parser.add_argument("--outdir", dest = "outdir", type = str, default = '',
 						help = "If specified all output files will be written to that directory. Default: the current working directory")
 
-
-def add_test_parser( subparsers ):
+def add_asso_parser( subparsers ):
 	"""
 	Add test function 'test' argument parsers.
 	"""
-	parser_test = subparsers.add_parser("test", help = "Output for test parser")
+	parser_asso = subparsers.add_parser("asso", help = "Associate cluster with promoters")
 	## detail in subparser
-	test_parser_group = parser_test.add_argument_group( "general arguments" )
-	test_parser_group.add_argument( "-g", "--GTF-file", dest = "inputfile",
-	metavar = "GTFFILE", type = str, required = True, help = "Input annotation GTF filename. REQUIRED." )
+	parser_asso_group = parser_asso.add_argument_group( "general arguments" )
+    
+	parser_asso_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="PATH", help="Path to Input cluster, pomoter and another factor.", metavar="<file>")
+	parser_asso_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+	parser_asso_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
+			dest="back_name", help="Name of condition as background.", metavar="<str>")
+    
+	parser_asso_group.add_argument("-p", "--promoter", action="store", type=str, default = 'no_123',
+			dest="promoter_path", help="File name of gene promoters.", metavar="<file>")
+	parser_asso_group.add_argument("-o", "--other", action="store", type=str, default = 'no_123',
+			dest="other_path", help="File name of other factors.", metavar="<file>")
 	return
 
 def add_convert_parser( subparsers ):
@@ -157,7 +167,7 @@ def add_convert_parser( subparsers ):
 	parser_tem_group.add_argument("-i", "--in", action="store", type=str, required = True,
 		dest="input_path", help="Path to Input HiC file in .hic format", metavar="<file>")
 	
-	parser_tem_group.add_argument("-n", "--norm", action="store", type=str, 
+	parser_tem_group.add_argument("-n", "--norm", action="store", type=str, default='NONE',
 		dest="norm_hic", help="Norm of .hic file you are going to apply.", metavar="<str>")
 		
 	parser_tem_group.add_argument("-f", "--file_name", action="store", type=str, required = True,
@@ -180,20 +190,29 @@ def add_plot_parser( subparsers ):
 	## detail in subparser
 	plot_parser_group = parser_plot.add_argument_group( "general arguments" )
 	
-	plot_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
-		dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
+	plot_parser_group.add_argument("-p", "--chrom_position", action="store", type=str, required = True,
+			dest="chr_position", help="The chrom position for your plot.", metavar="<file>")
+	plot_parser_group.add_argument("-n", "--node_position", action="store", type=int, required = True,
+			dest="node_position", help="The node position for your plot.", metavar="<file>")
 	
-	plot_parser_group.add_argument("-c", "--cluster", action="store", type=str, required = True,
-		dest="cluster_path", help="Path to cluster file", metavar="<file>")
-		
-	plot_parser_group.add_argument("-n", "--gene name", action="store", type=str, required = True,
-		dest="gene_name", help="Name of gene.", metavar="<str>")
-		
+	plot_parser_group.add_argument("-g", "--gene_name", action="store", type=str, default = 'NONE',
+			dest="gene_name", help="The node position for your plot.", metavar="<file>")
+
+	plot_parser_group.add_argument("-o", "--cluster_files", action="store", type=str, required = True,
+			dest="cluster_path", help="Cluster information that you had.", metavar="<str>")
+	
+	plot_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
 	plot_parser_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
-		dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
-		
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
 	plot_parser_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
-		dest="back_name", help="Name of condition as background.", metavar="<str>")
+			dest="back_name", help="Name of condition as background.", metavar="<str>")
+
+	
+	plot_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0, 
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0", metavar="<float>")
+	plot_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10, 
+		dest="cut_off_value", help="cut-off value for sum of row counts, default=10", metavar="<float>")
 	
 	return
 
@@ -206,9 +225,9 @@ def add_find_parser( subparsers ):
 	parser_tem_group = parser_tem.add_argument_group( "general arguments" )
 	
 	parser_tem_group.add_argument("-i", "--in", action="store", type=str, required = True,
-		dest="input_path", help="Path to Input HiC file in .hic format", metavar="<file>")
+		dest="input_path", help="Path to output of hichub files", metavar="<file>")
 	
-	parser_tem_group.add_argument("-n", "--gene", action="store", type=str, 
+	parser_tem_group.add_argument("-n", "--gene", action="store", type=str, required = True,
 		dest="gene_name", help="Name of gene.", metavar="<str>")
 		
 	parser_tem_group.add_argument("-f", "--file_name", action="store", type=str, required = True,
@@ -229,22 +248,23 @@ def add_diff_parser( subparsers ):
 	diff_parser_group = parser_diff.add_argument_group( "general arguments" )
 	
 	diff_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
-		dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
-	
+			dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
 	diff_parser_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
-		dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
-		
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
 	diff_parser_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
-		dest="back_name", help="Name of condition as background.", metavar="<str>")
-		
+			dest="back_name", help="Name of condition as background.", metavar="<str>")
 	diff_parser_group.add_argument("-r", "--resolution", action="store", type=int, required = True,
 		dest="res", help="Resolution of HiC txt", metavar="<int>")
-	
-	diff_parser_group.add_argument("-p", "--pvalue", action="store", type=float, required = False,
-		default=0.00001, dest="pvalue", help="Optional: pvalue cutoff for output (diff hub)", metavar="<float>")
-		
-	diff_parser_group.add_argument("-t", "--num_threads", action="store", type=int, required = False,
-		default=1, dest="thread", help="Optional: Number of threads to run, default=1", metavar="<int>")
+    
+    
+	diff_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0, 
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0", metavar="<float>")
+	diff_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10, 
+		dest="cut_off_value", help="cut-off value for sum of row counts, default=10", metavar="<float>")
+	diff_parser_group.add_argument("-p", "--pvalue", action="store", type=float, default =0.00001, 
+		dest="pvalue", help="Optional: pvalue cutoff for output (diff hub), default=1e-5", metavar="<float>")
+	diff_parser_group.add_argument("-t", "--num_threads", action="store", type=int, default =1, 
+		dest="thread", help="Optional: Number of threads to run, default=1", metavar="<int>")
 	
 	return
 
