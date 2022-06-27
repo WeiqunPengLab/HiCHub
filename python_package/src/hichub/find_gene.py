@@ -32,14 +32,14 @@ def revise_hub(hubs):
 
 
     stripe = pd.DataFrame()
-    stripe = stripe.append(stripe_1)
-    stripe = stripe.append(stripe_2)
+    stripe = pd.concat([stripe, stripe_1], axis=0)#stripe.append(stripe_1)
+    stripe = pd.concat([stripe, stripe_2], axis=0)#stripe = stripe.append(stripe_2)
     stripe.drop_duplicates(subset=['0','1','2'],keep='first', inplace=True)
 
 
     total = pd.DataFrame()
-    total = total.append(stripe)
-    total = total.append(pyramid)
+    total = pd.concat([total, stripe], axis=0)#total = total.append(stripe)
+    total = pd.concat([total, pyramid], axis=0)#total = total.append(pyramid)
     total.drop_duplicates(subset=['0','1','2'],keep='first', inplace=True)
     total['label'] = 'H1ESC'
 
@@ -84,7 +84,7 @@ def find_hub(gene_name, input_path, file_name, file_label):
 ### FUNCTIONS
 def run(opt):
 	## parameters
-	PATH_INPUT = opt.input_path
+	PATH_INPUT = opt.input_path + '/'
 	os.chdir(PATH_INPUT)
 	File_Name_Sets = opt.file_name.split(',')
 	File_Label_Sets = opt.file_label.split(',')
@@ -124,7 +124,7 @@ def main(argv):
 		sys.exit(1)
 	
 	## parameters
-	PATH_INPUT = opt.input_path
+	PATH_INPUT = opt.input_path + '/'
 	os.chdir(PATH_INPUT)
 	File_Name_Sets = opt.file_name.split(',')
 	File_Label_Sets = opt.file_label.split(',')

@@ -1,16 +1,3 @@
-#!/usr/bin/env python
-########################################################################
-## 01/11/2020
-## By Xiang Li,
-## lux@gwu.edu
-## Peng's Lab
-## Version.beta
-########################################################################
-# Usage 
-#python ${EXE_PATH} -b ${INPUT_FILE} -c ${INPUT_NAME} -k ${GENE_LIST_FOLDER}/${GENELISTFILE} -l ${GENELISTFILE: :-4} -r ${RESOLUTION} -f ${FRAGMENTSIZE} -g ${GTFFILE} \
-#	-w ${WINDOWSIZE} -n ${NORMALIZATION} -t ${REGIONTYPE} -u ${UP_EXTENSION} -d ${DOWN_EXTENSION} -o ${OUTPUTDIR} -p ${Genic_Partition}
-########################################################################
-
 import pandas as pd
 import os
 import struct
@@ -18,8 +5,8 @@ from optparse import OptionParser
 import sys
 #import straw
 import hicstraw
-####################################################################################
-## FUNCTIONS
+
+
 def readcstr(f):
     # buf = bytearray()
     buf = b""
@@ -91,7 +78,7 @@ def HiC_Matrix_to_Txt(_NORM, _hic, _cond, _resolution, _chr, _cut_off):
     df_tem = pd.DataFrame(data={'bin1':x,'bin2':y, _cond:c})  
     df_tem = df_tem[df_tem.loc[:, _cond] > _cut_off]
     #df_tem.loc[:, _cond] = round(10**6*df_tem.loc[:, _cond] /  df_tem[(df_tem.bin1==df_tem.bin2)].loc[:, _cond].sum(),2)
-    return df_tem
+    return df_tem.fillna(0)
     
 def Multi_Input_Matrix_to_Txt(_Norm, _hics, _conds, _resolution):
     
@@ -106,10 +93,15 @@ def Multi_Input_Matrix_to_Txt(_Norm, _hics, _conds, _resolution):
             df_hic = pd.DataFrame(columns=['bin1','bin2'])
             for cond, hic in zip(_conds, _hics):
                 df_hic_tem = HiC_Matrix_to_Txt(_Norm, hic, cond, _resolution, chr_idx, 0)
-                df_hic = df_hic.merge(df_hic_tem, on=['bin1','bin2'], how='outer')
+                if len(df_hic_tem) != 0:
+                    df_hic = df_hic.merge(df_hic_tem, on=['bin1','bin2'], how='outer')
+                else:
+                    df_hic_tem = pd.DataFrame(columns={'bin1','bin2',cond})
+                    df_hic = df_hic.merge(df_hic_tem, on=['bin1','bin2'], how='outer')
                 
             df_hic.insert(loc=0, column='#chr', value=chr_idx)
             df_hic = df_hic.fillna(0)
+            df_hic = df_hic.loc[:,['#chr','bin1','bin2']+_conds]
             df_hic.to_csv(Out_Name, sep='\t', mode='a', header=False, index=None)
     return None
 
@@ -144,8 +136,8 @@ def main(argv):
 	parser = OptionParser(description=desc)
 	parser.add_option("-i", "--in", action="store", type="string",
 			dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
-	parser.add_option("-n", "--norm", action="store", type="string",
-			dest="norm_hic", help="Norm of File.", metavar="<str>")
+	parser.add_option("-n", "--norm", action="store", type="string", default = 'NONE',
+			dest="norm_hic", help="Norm of File, default=NONE.", metavar="<str>")
 	parser.add_option("-f", "--file_name", action="store", type="string",
 			dest="file_name", help="Name of File. Delimiter ',', for example 'file1,file2' ", metavar="<str>")
 	parser.add_option("-l", "--file_label", action="store", type="string",
