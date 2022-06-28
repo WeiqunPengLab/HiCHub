@@ -46,29 +46,29 @@ Quick install: python -m pip install git+https://github.com/WeiqunPengLab/HicHub
 This tool contains 5 functions, which are 'convert', 'diff', 'asso', 'find', 'plot'. The examples of using are as follows:
 
 1) 'convert'
-  Please prepare two '.hic' files for comparing. Put these two files in the same directory. Then run following code:
+  Please prepare two '.hic' files, such as 'XX1.hic' and 'XX2.hic', for comparing. Put these two files in the same directory. Then run the following command:
   
 ```
 hichub convert -i [the directory of your files] -f [XX1.hic,XX2.hic](your files name) -l [XX1,XX2](name your file) -r [resolution] -n [normalization method]
 ```
 
-  ** -n normaliztion method is optional, the default is 'NONE', you can try 'KR'. The details can refert to <hic-straw>.
+  ** -n normaliztion method is optional, the default is 'NONE'. Other normalization schemes, such as 'KR', are also possible but have not been tried.
  
 2) 'diff'
-  Please put your converted file in setp (1), such as 'chr1.txt' (test data) in a directory and run in the same directory as:
+  Please put your converted files in step (1), such as 'chr1.txt' (test data) in a directory and run in the same directory as:
 
 ```
-hichub diff -i [the file name you have in step (1)] -f [one name of your label] -b [the other name of your label] -r [resolution]
+hichub diff -i [the file name you have in step (1)] -f [XX1] -b [XX2] -r [resolution]
 ```
   ** Here are some optional parameters:
-  -p p-value you want to cut, default = 0.00001
-  -d Fold change of difference of two situation to do cluster analysis, default = 1.0
-  -c Cut-off value, to remove the value of the sum of your two situation smaller than, default  = 10
+  -p p-value threshold, default = 0.00001
+  -d Fold change of difference of two situations to do cluster analysis, default = 1.0,  (see method)
+  -c Cut-off value, to remove the value of the sum of your two situation smaller than, default  = 10 (see method)
   
   The example for test data:
 
 ```
-hichub diff -i chr1.txt -f H1ESC -b HFFc6 -r 10000 -c 10 -d 1 -p 0.000001
+hichub diff -i chr1.txt -f H1ESC -b HFFc6 -r 10000 [-c 10 -d 1 -p 0.000001]
 ```
   
 3) 'associate'
