@@ -13,8 +13,7 @@ Latest updated on 29/03/2022,
 - [License](#license)
 
 ## Overview
-This module is a Python package containing tool for network analysis of HiC data.  
-It starts from HiC Interaction pairs, then generating network and clustering. Finally ranking all clusters by their interaction change.
+This module is a Python package containing tool for network analysis of differential interactions of Hic data.  
 
 ### Hardware Requirements
 
