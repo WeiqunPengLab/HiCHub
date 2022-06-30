@@ -3,7 +3,7 @@ Latest updated on 29/03/2022,
 # Comprehensive Network Analysis for HiC
 
 <br>
-<img src="image/Hub_Myb.png" width="800">
+<img src="image/Hub_Myb.PNG" width="800">
 <br>
 
 - [Overview](#overview)
