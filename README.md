@@ -112,7 +112,7 @@ The output is a (.txt) format files which contains the contact matrics of two (.
 
 For example: #chr----bin1-----bin2----H1ESC----HFFc6  
   
-Where, '#chr', 'bin1', 'bin2' represent the contact matric of chromosome '#chr', coordinate 'bin1' and 'bin2'.  
+Where, '#chr', 'bin1', 'bin2' represent the chromosome, the location of the left anchor and the location of the right anchor respectivly. 
   
 <img src="image/3.png" width="800">
   
