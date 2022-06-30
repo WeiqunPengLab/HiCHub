@@ -142,30 +142,29 @@ There are four output files.
 (3) --- 'cluster_H1ESC.txt'  
 (4) --- 'cluster_HFFc6.txt'
 
-(1) and (2) contain the hubs we found.   
+(1) and (2) contain the cell-type-specific hubs we found.   
 Format: left_hub_anchor ---- right_hub_anchor ---- -log10(pvalue)  
-'H1ESC_specific_hubs' means find the region with interaction changing as H1ESC > HFFc6.  
-'HFFc6_specific_hubs' means find the region with interaction changing as HFFc6 > H1ESC.  
+
   
-(3) and (4) record the cluster information we used to call hubs, they are important to draw igrph-plot in the following functions.  
+(3) and (4) record the cluster information we used to call hubs, they are use for drawing the network plot in the following functions.  
   
 <img src="image/4.png" width="800">
   
 ### 'asso'
-In order to draw igraph-plot around a gene that called the HicHub, we need to first associate the informaion of cluster with gene.  
+This function associate genome annotation (gene, open chromatin) with network clusters. 
   
-In the '~/test' folder, there are also tow test files named 'promoter.bed' and 'DNase.bed' contains the information of gene promoter and DNase for the test data.  
+In the '~/test' folder, there are also two test files named 'promoter.bed' and 'DNase.bed' containing the information of gene promoter and DNase for the test data.  
   
 ```
 hichub  asso -i [run path] -l [label you have used before] -p [the files contain gene promoter] -f [Optional, file name for DNase, CTCF, ...]
 ```
  -i : Your input path,the directory that you run the HicHub program. For example: '-i /mnt/d/test'  
  -l : The labe you have used in the 'convert' and 'diff' step. For example: '-l H1ESC,HFFc6'  
- -p : The file name that contain gene promoter's information.    
-      The input format should be : #chr ---- start ---- end ---- gene_name    
-      It contains the coordinate and name of the gene you want to analysis and plot in the future.  
- -f : Optional. The file name that contain other factors, such as DNase, CTCF ....
-      The input format should be : #chr ---- start ---- end ---- label1 ---- label2 ---- logFC  
+ -p : The name of the file that contains gene promoter's information.    
+      The input format should be : #chr----start----end----gene_name, the program uses the start to determine     
+      It contains the coordinate and name of the genes you want to analize and plot in the future.  '----' denotes a Tab.   
+ -f : Optional. The name of the file that contains information about another factor, such as DNase, CTCF ....
+      The input format should be : #chr----start----end----label1----label2----logFC  
   
 For example:  
 ```
@@ -174,12 +173,12 @@ hichub asso -i /mnt/d/test -l H1ESC,HFFc6 -p promoter.bed
 ```
 hichub asso -i /mnt/d/test -l H1ESC,HFFc6 -p promoter.bed -f DNase.bed
 ```
-The ouput is the files with name "cluster_final_H1ESC.txt" and "cluster_final_H1ESC.txt". They associate the gene with ghe cluter nodes.
+The ouput is the files with name "cluster_annotated_H1ESC.txt" and "cluster_annotated_H1ESC.txt". They associate the gene with the cluster nodes.
   
 <img src="image/4.png" width="800">
   
 ### 'plot'
-Now, if you have a gene name, for example: LOX (for human). You can find if it contains in any hubs and plot its igraph-plot.  
+This function plots the networks associated with one or more particular gene(s) along with the annotation information.
 
 ```
 hichub plot -i [yout (.txt) file's name] -l [label you have used before] -p [the files contain gene promoter] -n [gene name] -c [optional, cut-off threshold you have used in 'diff'] -d [optional, folde change threshold you have used in 'diff'] 
@@ -187,13 +186,13 @@ hichub plot -i [yout (.txt) file's name] -l [label you have used before] -p [the
  -i : Your converted (.txt) file's name from the 'convert' step. For example: '-i Summary_H1ESC_HFFc6_Dense_Matrix.txt'  
  -l : The labe you have used in the 'convert', 'diff', 'asso' steps. For example: '-l H1ESC,HFFc6'  
  -p : The file name that contain gene promoter's information.    
-      The input format should be : #chr ---- start ---- end ---- gene_name   
+      The input format should be : #chr----start----end----gene_name   
  -n : The gene name you want to plot. For example: '-n LOX'  
  
  -c : Optional default = 10. The -c value you have used in 'diff'.       
- -d : Optional default = 1.0, The -d value you have used in 'diff'.     
+ -d : Optional default = 1.0. The -d value you have used in 'diff'.     
  
-The result will contain the igraph-plot for gene you entered.   
+The result will contain the network plot for gene you entered.   
 If this gene is not in any hub, you will received the hint that : 'The 'gene_name' does not exist in any hubs.'  
 ## Versioning
 
