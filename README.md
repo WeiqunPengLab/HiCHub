@@ -108,9 +108,9 @@ hichub convert -i /mnt/d/test -f H1ESC.hic,HFFc6.hic -l H1ESC,HFFc6 -r 10000
 
 The output is a (.txt) format files which contains the contact matrics of two (.hic) files in the format:  
   
-#chr----bin1----bin2----label1----label2.  
+#chr    bin1    bin2    label1    label2.  
 
-For example: #chr----bin1-----bin2----H1ESC----HFFc6  
+For example: #chr    bin1    bin2    H1ESC    HFFc6  
   
 Where, '#chr', 'bin1', 'bin2' represent the chromosome, the location of the left anchor and the location of the right anchor respectivly. 
   
