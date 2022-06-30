@@ -136,8 +136,7 @@ hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000
 ```
 hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000 -c 10 -d 1 -p 0.00001
 ```
-
-The output will contain 4 files. For example
+There are four output files. For example  
 (1) --- 'H1ESC_specific_regions.bed'  
 (2) --- 'HFFc6_specific_regions.bed'  
 (3) --- 'cluster_H1ESC.txt'  
@@ -150,7 +149,7 @@ Format: reg1 ---- reg2 ---- -log10(pvalue)
   
 (3) and (4) record the cluster information we used to call hubs, they are important to draw igrph-plot in the following functions.  
   
-<img src="image/3.png" width="800">
+<img src="image/4.png" width="800">
   
 ### 'asso'
 In order to draw igraph-plot around a gene that called the HicHub, we need to first associate the informaion of cluster with gene.  
