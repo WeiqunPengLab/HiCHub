@@ -51,7 +51,7 @@ pip install scipy
 Quick installation. Please type the following command in your Linux shell to install HicHub.
 
 ```
-python -m pip install git+https://github.com/WeiqunPengLab/HicHub_installation
+python -m pip install git+https://github.com/WeiqunPengLab/HiCHub
 ```
 
 <img src="image/1.png" width="800">  
