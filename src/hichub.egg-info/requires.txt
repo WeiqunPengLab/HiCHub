@@ -3,3 +3,4 @@ numpy
 pybedtools
 scipy
 python-igraph
+hic-straw
