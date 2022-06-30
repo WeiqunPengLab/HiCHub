@@ -136,16 +136,16 @@ hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000
 ```
 hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000 -c 10 -d 1 -p 0.00001
 ```
-There are four output files. For example  
-(1) --- 'H1ESC_specific_regions.bed'  
-(2) --- 'HFFc6_specific_regions.bed'  
+There are four output files.    
+(1) --- 'H1ESC_specific_hubs.bed'  
+(2) --- 'HFFc6_specific_hubs.bed'  
 (3) --- 'cluster_H1ESC.txt'  
 (4) --- 'cluster_HFFc6.txt'
 
-(1) and (2) are the HicHub we found.   
-Format: reg1 ---- reg2 ---- -log10(pvalue)  
-'H1ESC_specific_regions' means find the region with interaction changing as H1ESC > HFFc6.  
-'HFFc6_specific_regions' means find the region with interaction changing as HFFc6 > H1ESC.  
+(1) and (2) contain the hubs we found.   
+Format: left_hub_anchor ---- right_hub_anchor ---- -log10(pvalue)  
+'H1ESC_specific_hubs' means find the region with interaction changing as H1ESC > HFFc6.  
+'HFFc6_specific_hubs' means find the region with interaction changing as HFFc6 > H1ESC.  
   
 (3) and (4) record the cluster information we used to call hubs, they are important to draw igrph-plot in the following functions.  
   
