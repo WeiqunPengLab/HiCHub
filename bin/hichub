@@ -1,0 +1,310 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import sys
+import time
+import logging
+import argparse
+from hichub.Constants import *
+
+########################################################################
+# HiCHub Modules
+########################################################################
+
+def main():
+	"""The Main function/pipeline for hichub.
+	"""
+	# Parse options...
+	argparser = prepare_argparser()
+	args = argparser.parse_args()
+	
+	logging.basicConfig(level=logging.DEBUG,
+						format='[%(asctime)s]: %(message)s ',
+						datefmt='%Y-%m-%d %H:%M:%S',
+						stream=sys.stdout,
+						filemode="w"
+						)    
+	print("welcome")
+	print("The python env is: " + sys.version)
+	print("usage: hichub [-h] {convert, diff, asso, plot} ...")
+	print("hichub -- A toolset to detect and analyze differential Hubs.")
+	print("positional arguments:")
+	print("  {convert, diff, asso, plot}  sub-command help")
+	print("    convert            Convert multi .hic to .txt format.")
+	print("    diff               Parser for call hubs")
+	print("    asso               Parser for associate clusters with promoter")
+	print("    plot               Parser for plot clusters in igraph package.")
+	print("optional arguments:")
+	print("  -h, --help           show this help message and exit")
+	#print("  -v, --version        show program's version number and exit")
+
+	if (hasattr(args, 'outdir')):  # use a output directory to store HicHub output
+		if not os.path.exists( args.outdir ):
+			try:
+				os.makedirs( args.outdir )
+			except:
+				sys.exit( "Output directory (%s) could not be created. Terminating program." % args.outdir )
+
+## subcommand
+	subcommand  = args.subcommand
+	
+	if subcommand == "convert":
+		from hichub.convert_multi_hic_to_txt import run
+		logging.info("This module can convert multiple .hic files into a .txt file.")
+		print('-' * 50)
+		start_time = time.time()
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
+
+	elif subcommand == "diff":
+		logging.info("Beginning HicHub diff hubs calling.")
+		print('-' * 50)
+		start_time = time.time()
+		from hichub.call_diff import run
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
+    
+	elif subcommand == "asso":
+		logging.info("Associate cluster with gene promoters.")
+		print('-' * 50)
+		start_time = time.time()
+		from hichub.associate import run
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
+
+	elif subcommand == "plot":
+		logging.info("Plot clusters in igraph package.")
+		print('-' * 50)
+		start_time = time.time()
+		from hichub.plot import run
+		run( args )
+		end_time = time.time()
+		print('-' * 50)
+		logging.info("Run complete: %s elapsed" % elapsed_time(start_time, end_time))
+
+
+	return argparser
+
+
+def prepare_argparser():
+	"""
+	Prepare optparser object. New options will be added in this function first.
+	"""
+	description = "%(prog)s -- A toolset to detect and analyze differential Hubs"
+	epilog = "For command line options of each command, type: %(prog)s COMMAND -h"
+	# top-level parser
+	parser = argparse.ArgumentParser( description = description, epilog = epilog)
+	parser.add_argument("-v", "--version", action="version", version="%(prog)s "+ hichub_VERSION)
+	
+	subparsers = parser.add_subparsers( dest = 'subcommand', 
+	help='sub-command help' 
+	)
+
+	# command for 'diff'
+	add_diff_parser( subparsers )
+	# command for 'convert'
+	add_convert_parser( subparsers )
+    # command for 'plot'
+	add_plot_parser( subparsers )
+    # command for 'asso'
+	add_asso_parser( subparsers )
+	
+	return parser
+
+def add_outdir_option( parser ):
+	parser.add_argument("--outdir", dest = "outdir", type = str, default = '',
+						help = "If specified all output files will be written to that directory. Default: the current working directory")
+
+def add_convert_parser( subparsers ):
+	"""
+	Convert multi .hic to txt format --> Format should be: #chr	bin1	bin2	Count"
+	"""
+	parser_tem = subparsers.add_parser("convert", help = "Convert multi .hic to txt format --> Format should be: #chr	bin1	bin2	Count")
+	## detail in subparser
+	parser_tem_group = parser_tem.add_argument_group( "general arguments" )
+	'''
+	parser_tem_group.add_argument("-i", "--in", action="store", type=str, required = True,
+		dest="input_path", help="Path to Input HiC file in .hic format", metavar="<file>")
+	
+	parser_tem_group.add_argument("-n", "--norm", action="store", type=str, default='NONE',
+		dest="norm_hic", help="Norm of .hic file you are going to apply.", metavar="<str>")
+		
+	parser_tem_group.add_argument("-f", "--file_name", action="store", type=str, required = True,
+		dest="file_name", help="Name of File. Delimiter ',', for example 'file1,file2' ", metavar="<str>")
+		
+	parser_tem_group.add_argument("-l", "--file_label", action="store", type=str, required = True,
+		dest="file_label", help="Name of File.Delimiter ',', for example 'label1,label2'", metavar="<str>")
+		
+	parser_tem_group.add_argument("-r", "--resolution", action="store", type=int, required = True,
+		dest="res", help="Resolution of HiC txt", metavar="<int>")
+	'''
+	parser_tem_group.add_argument("-i", "--input_path", action="store", type=str,  required = True,
+			dest="input_path", help="Path to input HiC files.", metavar="<path>")
+	
+	parser_tem_group.add_argument("-f", "--file_name", action="store", type=str,  required = True,
+			dest="file_name", help="Name of input .hic files. Delimiter ',', for example 'file1,file2'.", metavar="<files>")
+	
+	parser_tem_group.add_argument("-l", "--file_label", action="store", type=str,  required = True,
+			dest="file_label", help="Label of output .txt files. Delimiter ',', for example 'label1,label2'.", metavar="<str>")
+	
+	parser_tem_group.add_argument("-r", "--resolution", action="store", type=int,  required = True,
+		dest="res", help="Resolution of output contact matrixs.", metavar="<int>")
+	
+	
+	parser_tem_group.add_argument("-n", "--norm", action="store", type=str, default = 'NONE',
+			dest="norm_hic", help="Normalization method of reading .hic files, default=NONE.", metavar="<str>")
+	return 
+
+def add_diff_parser( subparsers ):
+	"""
+	Module for Diff Hubs argument parsers.
+	"""
+	parser_diff = subparsers.add_parser("diff", help = "Parser for diff hubs")
+	## detail in subparser
+	
+	diff_parser_group = parser_diff.add_argument_group( "general arguments" )
+	'''
+	diff_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
+	diff_parser_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+	diff_parser_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
+			dest="back_name", help="Name of condition as background.", metavar="<str>")
+	diff_parser_group.add_argument("-r", "--resolution", action="store", type=int, required = True,
+		dest="res", help="Resolution of HiC txt", metavar="<int>")
+    
+    
+	diff_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0, 
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0", metavar="<float>")
+	diff_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10, 
+		dest="cut_off_value", help="cut-off value for sum of row counts, default=10", metavar="<float>")
+	diff_parser_group.add_argument("-p", "--pvalue", action="store", type=float, default =0.00001, 
+		dest="pvalue", help="Optional: pvalue cutoff for output (diff hub), default=1e-5", metavar="<float>")
+	diff_parser_group.add_argument("-t", "--num_threads", action="store", type=int, default =1, 
+		dest="thread", help="Optional: Number of threads to run, default=1", metavar="<int>")
+	'''
+	diff_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="input_path", help="Input .txt file you want to call hubs.", metavar="<file>")
+	
+	diff_parser_group.add_argument("-l", "--label", action="store", type=str, required = True,
+			dest="label", help="Name of labels you want to call hubs in your .txt files. Delimiter ',', for example 'label1,label2'.", metavar="<str>")
+
+	diff_parser_group.add_argument("-r", "--resolution", action="store", type=int, required = True,
+		dest="res", help="Resolution of .hic files you converted before.", metavar="<int>")  
+      
+	diff_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0,
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0.", metavar="<float>")
+	diff_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10,
+		dest="cut_off_value", help="Optional: Remove sum of row counts smaller than this value, default=10.", metavar="<float>")
+	diff_parser_group.add_argument("-p", "--pvalue", action="store", type=float, default = 0.00001,
+		dest="pvalue", help="Optional: Pvalue threshold for output (diff hub), default=1e-5.", metavar="<float>")
+		
+	diff_parser_group.add_argument("-t", "--num_threads", action="store", type=int, default = 1,
+		dest="thread", help="Optional: Number of threads to run, default=1.", metavar="<int>")
+	
+	return
+
+def add_asso_parser( subparsers ):
+	"""
+	Add test function 'test' argument parsers.
+	"""
+	parser_asso = subparsers.add_parser("asso", help = "Associate cluster with promoters")
+	## detail in subparser
+	parser_asso_group = parser_asso.add_argument_group( "general arguments" )
+	'''
+	parser_asso_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="PATH", help="Path to Input cluster, pomoter and another factor.", metavar="<file>")
+	parser_asso_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+	parser_asso_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
+			dest="back_name", help="Name of condition as background.", metavar="<str>")    
+	parser_asso_group.add_argument("-p", "--promoter", action="store", type=str, required = True,
+			dest="promoter_path", help="File name of gene promoters.", metavar="<file>")
+	
+	parser_asso_group.add_argument("-o", "--other", action="store", type=str, default = 'no_123',
+			dest="other_path", help="File name of other factors.", metavar="<file>")
+	'''
+	parser_asso_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="PATH", help="Path to Input cluster, pomoter and another factor.", metavar="<file>")
+	
+	parser_asso_group.add_argument("-l", "--label", action="store", type=str, required = True,
+			dest="label", help="Name of labels you have used to call hubs. Delimiter ',', for example 'label1,label2'.", metavar="<str>")
+  
+	parser_asso_group.add_argument("-p", "--promoter", action="store", type=str, required = True,
+			dest="promoter_path", help="File name of gene promoters.", metavar="<file>")
+	
+	parser_asso_group.add_argument("-f", "--function_file", action="store", type=str, default = 'no_123',
+			dest="other_path", help="File name of other factors.", metavar="<file>")
+	return
+
+def add_plot_parser( subparsers ):
+	"""
+	Module for Diff Hubs argument parsers.
+	"""
+	parser_plot = subparsers.add_parser("plot", help = "Parser for plot clusters")
+	## detail in subparser
+	plot_parser_group = parser_plot.add_argument_group( "general arguments" )
+	'''
+	plot_parser_group.add_argument("-p", "--chrom_position", action="store", type=str, required = True,
+			dest="chr_position", help="The chrom position for your plot.", metavar="<file>")
+	plot_parser_group.add_argument("-n", "--node_position", action="store", type=int, required = True,
+			dest="node_position", help="The node position for your plot.", metavar="<file>")
+	
+	plot_parser_group.add_argument("-g", "--gene_name", action="store", type=str, default = 'NONE',
+			dest="gene_name", help="The node position for your plot.", metavar="<file>")
+
+	plot_parser_group.add_argument("-o", "--cluster_files", action="store", type=str, required = True,
+			dest="cluster_path", help="Cluster information that you had.", metavar="<str>")
+	
+	plot_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="input_path", help="Path to Input HiC file in txt format", metavar="<file>")
+	plot_parser_group.add_argument("-f", "--foreground_name", action="store", type=str, required = True,
+			dest="fore_name", help="Name of condition as foreground.", metavar="<str>")
+	plot_parser_group.add_argument("-b", "--background_name", action="store", type=str, required = True,
+			dest="back_name", help="Name of condition as background.", metavar="<str>")
+
+	
+	plot_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0, 
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0", metavar="<float>")
+	plot_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10, 
+		dest="cut_off_value", help="cut-off value for sum of row counts, default=10", metavar="<float>")
+	'''
+	plot_parser_group.add_argument("-i", "--in", action="store", type=str, required = True,
+			dest="input_path", help="Input .txt file you want to call hubs..", metavar="<file>")
+	plot_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0,
+		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0.", metavar="<float>")
+	plot_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10,
+		dest="cut_off_value", help="Optional: Remove sum of row counts smaller than this value, default=10.", metavar="<float>")
+	
+	plot_parser_group.add_argument("-l", "--label", action="store", type=str, required = True,
+			dest="label", help="Name of labels you have used to call hubs. Delimiter ',', for example 'label1,label2'.", metavar="<str>")
+	
+	plot_parser_group.add_argument("-p", "--promoter", action="store", type=str, required = True,
+			dest="promoter_path", help="File name of gene promoters.", metavar="<file>")
+	
+	plot_parser_group.add_argument("-n", "--gene name", action="store", type=str, required = True,
+			dest="gene_name", help="Name of gene as input.", metavar="<str>")	
+	
+	return
+
+
+def elapsed_time(start_time, end_time):
+	elapsed_sec = end_time - start_time
+	h = int(elapsed_sec / (60 * 60))
+	m = int((elapsed_sec % (60 * 60)) / 60)
+	s = int(elapsed_sec % 60)
+	return "{}:{:>02}:{:>02}".format(h, m, s)
+
+
+if __name__ == '__main__':
+	try:
+		main()
+	except KeyboardInterrupt:
+		sys.stderr.write("User interrupted me!\n")
+		sys.exit(0)
