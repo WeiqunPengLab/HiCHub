@@ -53,8 +53,6 @@ Quick installation. Please type the following command in your Linux shell to ins
 python -m pip install git+https://github.com/WeiqunPengLab/HiCHub
 ```
 
-<img src="image/1.png" width="800">  
-
 If installing successfully, type
 
 ```
