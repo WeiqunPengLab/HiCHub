@@ -35,7 +35,8 @@ def read_header(req):
     if (magic_string != b"HIC"):
         error_string = ('... This does not appear to be a HiC file; '
                        'magic string is incorrect')
-        force_exit(error_string, req)
+        exit(0)
+        #force_exit(error_string, req)
     global version
     version = struct.unpack(b'<i', req.read(4))[0]
     
