@@ -183,7 +183,7 @@ hichub asso -i /mnt/d/test -l H1ESC,HFFc6 -p promoter.bed -f DNase.bed
 ```
 The ouput is the files with name "cluster_annotated_H1ESC.txt" and "cluster_annotated_H1ESC.txt". They associate the gene with the cluster nodes.
   
-<img src="image/4.png" width="800">
+<img src="image/5.png" width="800">
   
 ### 'plot'
 This function plots the networks associated with one or more particular gene(s) along with the annotation information.
@@ -208,7 +208,7 @@ hichub plot -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -p promoter.b
 ```
 It will plot the network around gene CPTP.  
 
-<img src="image/5.png" width="800">
+<img src="image/6.png" width="800">
 ## Versioning
 
 ```
