@@ -166,13 +166,13 @@ hichub  asso -i [run path] -l [label you have used before] -p [the files contain
  -p : The name of the file that contains gene promoter's information.    
       The input format should be :
 ```
-#chr  start end gene_name
+#chr    start    end    gene_name
 ```     
       It contains the coordinate and name of the genes you want to analize and plot in the future.  
  -f : Optional. The name of the file that contains information about another factor, such as DNase, CTCF ....
       The input format should be :  
 ```
-#chr  start end label1  label2  logFC  
+#chr    start    end    label1    label2     logFC  
 ```
       logFC represents the log2FC, the log2 foldchange of your input factors in two situations.  
 For example:  
