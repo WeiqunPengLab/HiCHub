@@ -189,19 +189,26 @@ The ouput is the files with name "cluster_annotated_H1ESC.txt" and "cluster_anno
 This function plots the networks associated with one or more particular gene(s) along with the annotation information.
 
 ```
-hichub plot -i [yout (.txt) file's name] -l [label you have used before] -p [the files contain gene promoter] -n [gene name] -c [optional, cut-off threshold you have used in 'diff'] -d [optional, folde change threshold you have used in 'diff'] 
+hichub plot -i [yout (.txt) file's name] -l [label you have used before] -p [the files contain gene promoter] -n [gene names, seperate with ','] -c [optional, cut-off threshold you have used in 'diff'] -d [optional, folde change threshold you have used in 'diff'] 
 ```
  -i : Your converted (.txt) file's name from the 'convert' step. For example: '-i Summary_H1ESC_HFFc6_Dense_Matrix.txt'  
  -l : The labe you have used in the 'convert', 'diff', 'asso' steps. For example: '-l H1ESC,HFFc6'  
  -p : The file name that contain gene promoter's information.    
       The input format should be : #chr----start----end----gene_name   
- -n : The gene name you want to plot. For example: '-n LOX'  
+ -n : The gene names you want to plot. For example: '-n CPTC,DFFB'  
  
  -c : Optional default = 10. The -c value you have used in 'diff'.       
  -d : Optional default = 1.0. The -d value you have used in 'diff'.     
  
 The result will contain the network plot for gene you entered.   
 If this gene is not in any hub, you will received the hint that : 'The 'gene_name' does not exist in any hubs.'  
+For example:  
+```
+hichub plot -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -p promoter.bed -n CPTP
+```
+It will plot the network around gene CPTP.  
+
+<img src="image/5.png" width="800">
 ## Versioning
 
 ```
