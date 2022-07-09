@@ -163,8 +163,7 @@ hichub  asso -i [run path] -l [label you have used before] -p [the files contain
 ```
  -i : Your input path,the directory that you run the HicHub program. For example: '-i /mnt/d/test'  
  -l : The labe you have used in the 'convert' and 'diff' step. For example: '-l H1ESC,HFFc6'  
- -p : The name of the file that contains gene promoter's information. It contains the coordinate and name of the genes you want to analize and plot in the future.  
-      The input format should be :
+ -p : The name of the file that contains gene promoter's information. It contains the coordinate and name of the genes you want to analize and plot in the future. The input format should be :
 ```
 #chr    start    end    gene_name
 ```     
