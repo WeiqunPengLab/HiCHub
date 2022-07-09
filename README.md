@@ -173,7 +173,8 @@ hichub  asso -i [run path] -l [label you have used before] -p [the files contain
       The input format should be :  
 ```
 #chr    start    end    label1    label2     logFC  
-```
+```  
+
       logFC represents the log2FC, the log2 foldchange of your input factors in two situations.  
 For example:  
 ```
