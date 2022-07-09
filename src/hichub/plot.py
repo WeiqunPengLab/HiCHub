@@ -269,7 +269,8 @@ def plot_igragh(edges, cluster, gene):
     # 布局方式
     #visual_style["layout"] = layout
     # -----------------------画图-----------------------------
-    ig.plot(graph_term, **visual_style)
+    out = ig.plot(graph_term, **visual_style)
+    out.save(gene+'.png')
 
     #ig.plot(g, layout = 'kk').show()
     return None
