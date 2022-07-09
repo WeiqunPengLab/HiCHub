@@ -80,7 +80,9 @@ optional arguments:
 ## Example of Runing
 
 In order to call HicHubs, you first need to prepare two (.hic) files and put them in the same directory.  
+  
 In this Github, under the directory '~/test' there are two (.hic) files named 'H1ESC.hic' and 'HFFc6.hic'.  
+  
 You can download them for test.  
   
 ATTENTION: You need to run all these process in the same directory, once you finished one step, please don't change the name of output files!  
