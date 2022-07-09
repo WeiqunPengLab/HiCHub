@@ -41,6 +41,9 @@ Before install HicHub, make sure you install following packages:
 pip install hic-straw
 ```
 ```
+sudo apt-get install bedtools
+```
+```
 pip install pybedtools
 ```
 ```
