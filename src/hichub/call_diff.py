@@ -274,6 +274,8 @@ def revise_data_format(df_hic, _col_fore, _col_back):
     return data_ori
 
 def re_calculate_pvalue(_df,data):
+    if len(_df) == 0:
+        return []
     test = _df
     test['chr_x'] = test['reg1'].str.split(':', expand = True)[0]
     test['bin1_x'] = test['reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
@@ -303,9 +305,13 @@ def count_number(df1,test):
             data = data[data['x1']<=(region.iloc[i,5])]
             data = data[data['y1']>=region.iloc[i,1]]
             data = data[data['y1']<=(region.iloc[i,2])]
+            
+        if len(data)>10:           
+            w, pvalue =stats.wilcoxon(data['diff'], zero_method='zsplit', alternative='greater', correction=True, mode='approx')
+            pvalue_box.append(pvalue)
+        else:
+            pvalue_box.append(1)
         
-        w, pvalue =stats.wilcoxon(data['diff'], zero_method='zsplit', alternative='greater', correction=True, mode='approx')
-        pvalue_box.append(pvalue)
         
     return pvalue_box
 

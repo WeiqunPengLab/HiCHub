@@ -12,9 +12,40 @@ random.seed(10)
 def revise_hub(hubs):
     df_test = hubs
     #df_test = df_test[df_test['-log10(pvalue)']>20]
+    
     #pyramid = pd.DataFrame()
-    pyramid = df_test[df_test['reg1'] == df_test['reg2']]
+    x = df_test[df_test['reg1'] == df_test['reg2']]
+    pyramid = pd.DataFrame(data={'0':x.loc[:,'reg1'].str.split(':', expand = True)[0],
+                                 '1':x.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                 '2':x.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                 'reg1':x.loc[:,'reg1'],
+                                 'reg2':x.loc[:,'reg2'],
+                                 '-log10(pvalue)':x.loc[:,'-log10(pvalue)']})
 
+    y = df_test[df_test['reg1'] != df_test['reg2']]
+    stripe_1 = pd.DataFrame(data={'0':y.loc[:,'reg1'].str.split(':', expand = True)[0],
+                                  '1':y.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                  '2':y.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                  'reg1':y.loc[:,'reg1'],
+                                  'reg2':y.loc[:,'reg2'],
+                                  '-log10(pvalue)':y.loc[:,'-log10(pvalue)']})
+    #stripe_1['0'] = stripe_1.loc[:,'reg1'].str.split(':', expand = True)[0]
+    #stripe_1['1'] = stripe_1.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    #stripe_1['2'] = stripe_1.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+
+    #stripe_2 = pd.DataFrame()
+    z = df_test[df_test['reg1'] != df_test['reg2']]
+    stripe_2 = pd.DataFrame(data={'0':z.loc[:,'reg1'].str.split(':', expand = True)[0],
+                                  '1':z.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                  '2':z.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                  'reg1':z.loc[:,'reg1'],
+                                  'reg2':z.loc[:,'reg2'],
+                                  '-log10(pvalue)':z.loc[:,'-log10(pvalue)']})
+    #stripe_2['0'] = stripe_2.loc[:,'reg2'].str.split(':', expand = True)[0]
+    #stripe_2['1'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    #stripe_2['2'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    
+    '''
     pyramid.loc[:,'0'] = pyramid.loc[:,'reg1'].str.split(':', expand = True)[0]
     pyramid.loc[:,'1'] = pyramid.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
     pyramid.loc[:,'2'] = pyramid.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
@@ -30,8 +61,8 @@ def revise_hub(hubs):
     stripe_2.loc[:,'0'] = stripe_2.loc[:,'reg2'].str.split(':', expand = True)[0]
     stripe_2.loc[:,'1'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
     stripe_2.loc[:,'2'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
-
-
+    '''
+    
     stripe = pd.DataFrame()
     stripe = pd.concat([stripe, stripe_1], axis=0)#stripe.append(stripe_1)
     stripe = pd.concat([stripe, stripe_2], axis=0)#stripe = stripe.append(stripe_2)
@@ -84,20 +115,19 @@ def find_hub(gene_name, input_path, file_name, file_label):
 	
 
 def Add_pesudo_count(_df_test, _count, _col1, _col2):
-    
-    df_test = _df_test
+    df_test = _df_test.copy()
     count = _count
     col1 = _col1
     col2 = _col2
-    
+    #print (df_test)
+        
     df_test[col1] = df_test[col1] + count
     df_test[col2] = df_test[col2] + count
-    
+    #print (df_test)
     return df_test
 
-def LOESS_Norm_df (_df, _col1, _col2):
+def LOESS_Norm_df (df_test, _col1, _col2):
     ## this is a similar approach as LOESS Normalization
-    df_test = _df
     df_test = Add_pesudo_count(df_test, 1, _col1, _col2)
     n_bins = 100
     df_test['A'] = 0.5*(np.log2(df_test[_col1]) + np.log2(df_test[_col2])) ## A is the value for MA plot 
@@ -114,8 +144,8 @@ def LOESS_Norm_df (_df, _col1, _col2):
         sum_1 = df_bbb[_col1].sum(axis=0)
         sum_2 = df_bbb[_col2].sum(axis=0)
         df_bbb[_col2] = round(df_bbb[_col2]/sum_2*sum_1, 2)
-       
-        df_out = df_out.append(df_bbb)
+        df_out = pd.concat([df_out, df_bbb], axis=0)
+        #df_out = df_out.append(df_bbb)
         df_out = df_out.sort_index()
     return df_out.sort_index()
 
@@ -239,7 +269,7 @@ def plot_igragh(edges, cluster, gene):
     # 布局方式
     #visual_style["layout"] = layout
     # -----------------------画图-----------------------------
-    ig.plot(graph_term, **visual_style).show()
+    ig.plot(graph_term, **visual_style)
 
     #ig.plot(g, layout = 'kk').show()
     return None
@@ -303,7 +333,7 @@ def run(opt):
 	col_back = opt.label.split(',')[1]
 	cut_off = opt.cut_off_value
 	FC = opt.foldchange
-	gene  = opt.gene_name
+	gene  = opt.gene_name.split(',')
 	promoter_path = opt.promoter_path
 	
 
@@ -315,24 +345,27 @@ def run(opt):
 	print ("Threshold value for sum of row counts is: %s" % cut_off)
 	print ("First label is: %s" % col_fore)
 	print ("Second label is: %s" % col_back)	
-	print ("Name of gene: %s" % gene)
+	for i in gene:
+		print ("Name of gene: %s" % i)
 	print ("Path of promoter: %s" % promoter_path)
 	print ("End of Summary.")
 	print (" ")
-	
+	print (" ")
 
 
 #### Main
-	File_Name_Sets = [col_fore+'_specific_regions.bed', col_back+'_specific_regions.bed']
-	File_Label_Sets = opt.label
-	result1 = find_hub(gene, 'no_need', File_Name_Sets, File_Label_Sets)
+	for sub_name in gene:
+		File_Name_Sets = [col_fore+'_specific_regions.bed', col_back+'_specific_regions.bed']
+		File_Label_Sets = [col_fore,col_back]
+		#print(File_Label_Sets)
+		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
 
-	if result1 != 'x':
-		cluster = 'cluster_final_'+ File_Label_Sets[result1] + '.txt'
-		if result1 == 0:
-			find_cluster(PATH_INPUT, cluster, gene, File_Label_Sets[0], File_Label_Sets[1], FC, cut_off,promoter_path)
-		if result1 == 1:
-			find_cluster(PATH_INPUT, cluster, gene, File_Label_Sets[1], File_Label_Sets[0], FC, cut_off,promoter_path)
+		if result1 != 'x':
+			cluster = 'cluster_final_'+ File_Label_Sets[result1] + '.txt'
+			if result1 == 0:
+				find_cluster(PATH_INPUT, cluster, sub_name, File_Label_Sets[0], File_Label_Sets[1], FC, cut_off, promoter_path)
+			if result1 == 1:
+				find_cluster(PATH_INPUT, cluster, sub_name, File_Label_Sets[1], File_Label_Sets[0], FC, cut_off, promoter_path)
 			
 	return None
 
@@ -370,7 +403,9 @@ def main(argv):
 	col_back = opt.label.split(',')[1]
 	cut_off = opt.cut_off_value
 	FC = opt.foldchange
-	gene  = opt.gene_name
+    
+	gene  = opt.gene_name.split(',')
+    
 	promoter_path = opt.promoter_path
 	
 
@@ -381,26 +416,29 @@ def main(argv):
 	print ("FC for qualified difference is: %s" % FC)
 	print ("Threshold value for sum of row counts is: %s" % cut_off)
 	print ("First label is: %s" % col_fore)
-	print ("Second label is: %s" % col_back)	
-	print ("Name of gene: %s" % gene)
+	print ("Second label is: %s" % col_back)
+	for i in gene:
+		print ("Name of gene: %s" % i)
 	print ("Path of promoter: %s" % promoter_path)
 	print ("End of Summary.")
+	print (" ")
 	print (" ")
 	
 
 
 #### Main
-	File_Name_Sets = [col_fore+'_specific_regions.bed', col_back+'_specific_regions.bed']
-	File_Label_Sets = [col_fore,col_back]
-	print(File_Label_Sets)
-	result1 = find_hub(gene, 'no_need', File_Name_Sets, File_Label_Sets)
+	for sub_name in gene:
+		File_Name_Sets = [col_fore+'_specific_regions.bed', col_back+'_specific_regions.bed']
+		File_Label_Sets = [col_fore,col_back]
+		#print(File_Label_Sets)
+		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
 
-	if result1 != 'x':
-		cluster = 'cluster_final_'+ File_Label_Sets[result1] + '.txt'
-		if result1 == 0:
-			find_cluster(PATH_INPUT, cluster, gene, File_Label_Sets[0], File_Label_Sets[1], FC, cut_off, promoter_path)
-		if result1 == 1:
-			find_cluster(PATH_INPUT, cluster, gene, File_Label_Sets[1], File_Label_Sets[0], FC, cut_off, promoter_path)
+		if result1 != 'x':
+			cluster = 'cluster_final_'+ File_Label_Sets[result1] + '.txt'
+			if result1 == 0:
+				find_cluster(PATH_INPUT, cluster, sub_name, File_Label_Sets[0], File_Label_Sets[1], FC, cut_off, promoter_path)
+			if result1 == 1:
+				find_cluster(PATH_INPUT, cluster, sub_name, File_Label_Sets[1], File_Label_Sets[0], FC, cut_off, promoter_path)
 
 
 #### First GeneBoydy

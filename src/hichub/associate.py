@@ -150,6 +150,8 @@ def run(argv):
 	print ("First label is: %s" % col_fore)
 	print ("Second label is: %s" % col_back)
 	print ('Your promoter file is: %s' % promoter_path)
+	if other_path != 'no_123':
+		print ('Your have another file is: %s' % other_path)
 	print ("End of Summary.")
 	print (" ")
 	
@@ -224,6 +226,8 @@ def main(argv):
 	print ("First label is: %s" % col_fore)
 	print ("Second label is: %s" % col_back)
 	print ('Your promoter file is: %s' % promoter_path)
+	if other_path != 'no_123':
+		print ('Your have another file is: %s' % other_path)
 	print ("End of Summary.")
 	print (" ")
 	
