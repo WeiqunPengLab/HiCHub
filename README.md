@@ -76,8 +76,6 @@ positional arguments:
 optional arguments:
   -h, --help           show this help message and exit
 ```
-
-<img src="image/2.png" width="800">
   
 ## Example of Runing
 
