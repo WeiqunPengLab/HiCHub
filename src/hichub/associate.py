@@ -102,7 +102,7 @@ def revise5():
 
     c = c.fillna(0)
 
-    c.to_csv('cluster_final.bed', sep='\t', index=None)
+    c.to_csv('cluster_annotated.bed', sep='\t', index=None)
     return c
 
 def revise(col_fore, attach_name, promoter_name, PATH):
@@ -120,13 +120,13 @@ def revise(col_fore, attach_name, promoter_name, PATH):
 		revise4()
 		x = revise5()
 		output = pd.concat([output, x], axis=0)#output.append(x,ignore_index=None)
-	output.to_csv('cluster_final_'+col_fore+'.txt',sep='\t',index=None)
+	output.to_csv('cluster_annotated_'+col_fore+'.txt',sep='\t',index=None)
         
 	os.remove('ATAC_combine.bed')
 	os.remove('ATAC_signal.bed')
 	os.remove('cluster.txt')
 	os.remove('cluster_combine.bed')
-	os.remove('cluster_final.bed')
+	os.remove('cluster_annotated.bed')
 	os.remove('cluster_promoter_final.bed')
 	os.remove('cluster_with_promoter.bed')
 	os.remove('D_C.bed')

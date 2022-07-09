@@ -14,53 +14,53 @@ def revise_hub(hubs):
     #df_test = df_test[df_test['-log10(pvalue)']>20]
     
     #pyramid = pd.DataFrame()
-    x = df_test[df_test['reg1'] == df_test['reg2']]
-    pyramid = pd.DataFrame(data={'0':x.loc[:,'reg1'].str.split(':', expand = True)[0],
-                                 '1':x.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
-                                 '2':x.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
-                                 'reg1':x.loc[:,'reg1'],
-                                 'reg2':x.loc[:,'reg2'],
+    x = df_test[df_test['left_hub_anchor'] == df_test['right_hub_anchor']]
+    pyramid = pd.DataFrame(data={'0':x.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
+                                 '1':x.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                 '2':x.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                 'left_hub_anchor':x.loc[:,'left_hub_anchor'],
+                                 'right_hub_anchor':x.loc[:,'right_hub_anchor'],
                                  '-log10(pvalue)':x.loc[:,'-log10(pvalue)']})
 
-    y = df_test[df_test['reg1'] != df_test['reg2']]
-    stripe_1 = pd.DataFrame(data={'0':y.loc[:,'reg1'].str.split(':', expand = True)[0],
-                                  '1':y.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
-                                  '2':y.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
-                                  'reg1':y.loc[:,'reg1'],
-                                  'reg2':y.loc[:,'reg2'],
+    y = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
+    stripe_1 = pd.DataFrame(data={'0':y.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
+                                  '1':y.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                  '2':y.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                  'left_hub_anchor':y.loc[:,'left_hub_anchor'],
+                                  'right_hub_anchor':y.loc[:,'right_hub_anchor'],
                                   '-log10(pvalue)':y.loc[:,'-log10(pvalue)']})
-    #stripe_1['0'] = stripe_1.loc[:,'reg1'].str.split(':', expand = True)[0]
-    #stripe_1['1'] = stripe_1.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    #stripe_1['2'] = stripe_1.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    #stripe_1['0'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0]
+    #stripe_1['1'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    #stripe_1['2'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
 
     #stripe_2 = pd.DataFrame()
-    z = df_test[df_test['reg1'] != df_test['reg2']]
-    stripe_2 = pd.DataFrame(data={'0':z.loc[:,'reg1'].str.split(':', expand = True)[0],
-                                  '1':z.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
-                                  '2':z.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
-                                  'reg1':z.loc[:,'reg1'],
-                                  'reg2':z.loc[:,'reg2'],
+    z = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
+    stripe_2 = pd.DataFrame(data={'0':z.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
+                                  '1':z.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                  '2':z.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                  'left_hub_anchor':z.loc[:,'left_hub_anchor'],
+                                  'right_hub_anchor':z.loc[:,'right_hub_anchor'],
                                   '-log10(pvalue)':z.loc[:,'-log10(pvalue)']})
-    #stripe_2['0'] = stripe_2.loc[:,'reg2'].str.split(':', expand = True)[0]
-    #stripe_2['1'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    #stripe_2['2'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    #stripe_2['0'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand = True)[0]
+    #stripe_2['1'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    #stripe_2['2'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
     
     '''
-    pyramid.loc[:,'0'] = pyramid.loc[:,'reg1'].str.split(':', expand = True)[0]
-    pyramid.loc[:,'1'] = pyramid.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    pyramid.loc[:,'2'] = pyramid.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    pyramid.loc[:,'0'] = pyramid.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0]
+    pyramid.loc[:,'1'] = pyramid.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    pyramid.loc[:,'2'] = pyramid.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
 
     #stripe_1 = pd.DataFrame()
-    stripe_1 = df_test[df_test['reg1'] != df_test['reg2']]
-    stripe_1.loc[:,'0'] = stripe_1.loc[:,'reg1'].str.split(':', expand = True)[0]
-    stripe_1.loc[:,'1'] = stripe_1.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    stripe_1.loc[:,'2'] = stripe_1.loc[:,'reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    stripe_1 = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
+    stripe_1.loc[:,'0'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0]
+    stripe_1.loc[:,'1'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    stripe_1.loc[:,'2'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
 
     #stripe_2 = pd.DataFrame()
-    stripe_2 = df_test[df_test['reg1'] != df_test['reg2']]
-    stripe_2.loc[:,'0'] = stripe_2.loc[:,'reg2'].str.split(':', expand = True)[0]
-    stripe_2.loc[:,'1'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    stripe_2.loc[:,'2'] = stripe_2.loc[:,'reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    stripe_2 = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
+    stripe_2.loc[:,'0'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand = True)[0]
+    stripe_2.loc[:,'1'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    stripe_2.loc[:,'2'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
     '''
     
     stripe = pd.DataFrame()
@@ -75,7 +75,7 @@ def revise_hub(hubs):
     total.drop_duplicates(subset=['0','1','2'],keep='first', inplace=True)
     total['label'] = 'H1ESC'
 
-    total = total.loc[:,['0','1','2','reg1','reg2','-log10(pvalue)','label']]
+    total = total.loc[:,['0','1','2','left_hub_anchor','right_hub_anchor','-log10(pvalue)','label']]
     #total.to_csv('top_H1ESC_regions.bed', sep = '\t', index = None)
     return total
 
@@ -98,7 +98,7 @@ def find_hub(gene_name, input_path, file_name, file_label):
         hub = hub[hub['0'] == chrom]
         hub = hub[hub['1'] <= start]
         hub = hub[hub['2'] >= start]
-        hub = hub.loc[:,['reg1','reg2','-log10(pvalue)']]
+        hub = hub.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)']]
         if len(hub) > 0:
             print('The gene ' + gene_name + ' is in '+file_label[i]+' hubs:')
             ttt = i
@@ -150,7 +150,7 @@ def LOESS_Norm_df (df_test, _col1, _col2):
     return df_out.sort_index()
 
 def plot_igragh(edges, cluster, gene):
-    test = cluster#pd.read_csv('cluster_final.bed',sep='\t')#,names=['chr','node','cluster'])
+    test = cluster#pd.read_csv('cluster_annotated.bed',sep='\t')#,names=['chr','node','cluster'])
     #test = test[test['gene_id'] == 'LSR']
     test = test.replace('up','triangle-up')
     test = test.replace('down','triangle-down')
@@ -361,7 +361,7 @@ def run(opt):
 		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
 
 		if result1 != 'x':
-			cluster = 'cluster_final_'+ File_Label_Sets[result1] + '.txt'
+			cluster = 'cluster_annotated_'+ File_Label_Sets[result1] + '.txt'
 			if result1 == 0:
 				find_cluster(PATH_INPUT, cluster, sub_name, File_Label_Sets[0], File_Label_Sets[1], FC, cut_off, promoter_path)
 			if result1 == 1:
@@ -434,7 +434,7 @@ def main(argv):
 		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
 
 		if result1 != 'x':
-			cluster = 'cluster_final_'+ File_Label_Sets[result1] + '.txt'
+			cluster = 'cluster_annotated_'+ File_Label_Sets[result1] + '.txt'
 			if result1 == 0:
 				find_cluster(PATH_INPUT, cluster, sub_name, File_Label_Sets[0], File_Label_Sets[1], FC, cut_off, promoter_path)
 			if result1 == 1:

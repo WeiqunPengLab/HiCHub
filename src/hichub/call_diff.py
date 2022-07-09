@@ -215,7 +215,7 @@ def Return_Pvalue_For_Given_Graph(_df_region, _resolution, _matrix):
                 pvalue_tem = Pvalue_Rank_Test_Matrix(part_matrix_for_test)
                 pvalue_region.append([df_region.hub_name[i],df_region.hub_name[j], np.round(-np.log10(pvalue_tem),3)])
 
-    return pd.DataFrame(data=pvalue_region, columns=['reg1', 'reg2', '-log10(pvalue)']).sort_values('-log10(pvalue)', ascending=False)
+    return pd.DataFrame(data=pvalue_region, columns=['left_hub_anchor', 'right_hub_anchor', '-log10(pvalue)']).sort_values('-log10(pvalue)', ascending=False)
 
 def Main_For_Diff_Regions(df_hic, _col_fore, _col_back,  _resolution, _pvalue, _logFC):
     data_1 = copy.deepcopy(df_hic)
@@ -237,7 +237,7 @@ def Main_For_Diff_Regions(df_hic, _col_fore, _col_back,  _resolution, _pvalue, _
     cut_off = global_median
     input_graph.es['weight'] = input_graph.es[_col_fore+'_weight']
     structure = input_graph.community_multilevel(weights=input_graph.es['weight'], return_levels=True)
-    df_out = pd.DataFrame(columns=['reg1', 'reg2', '-log10(pvalue)'])
+    df_out = pd.DataFrame(columns=['left_hub_anchor', 'right_hub_anchor', '-log10(pvalue)'])
     
     if (len(structure)==0):
         df_out.to_csv(_col_back+'_'+_col_fore+'_specific_regions.bed', sep='\t', mode='a', header=False, index=None)
@@ -277,13 +277,13 @@ def re_calculate_pvalue(_df,data):
     if len(_df) == 0:
         return []
     test = _df
-    test['chr_x'] = test['reg1'].str.split(':', expand = True)[0]
-    test['bin1_x'] = test['reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    test['bin2_x'] = test['reg1'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    test['chr_x'] = test['left_hub_anchor'].str.split(':', expand = True)[0]
+    test['bin1_x'] = test['left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    test['bin2_x'] = test['left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
 
-    test['chr_y'] = test['reg2'].str.split(':', expand = True)[0]
-    test['bin1_y'] = test['reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-    test['bin2_y'] = test['reg2'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    test['chr_y'] = test['right_hub_anchor'].str.split(':', expand = True)[0]
+    test['bin1_y'] = test['right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    test['bin2_y'] = test['right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
 
     test = test.loc[:,['chr_x','bin1_x','bin2_x','chr_y','bin1_y','bin2_y']]
     p_value_new = count_number(test, data)
@@ -383,7 +383,7 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
             
         print('All subprocesses done.')
 
-        col_out = [ 'reg1', 'reg2' ,'-log10(pvalue)','-log10(pvalue)_new']
+        col_out = [ 'left_hub_anchor', 'right_hub_anchor' ,'-log10(pvalue)','-log10(pvalue)_new']
         df_output = pd.read_csv(col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', header=None, names=col_out)
         df_output.sort_values(by='-log10(pvalue)_new', ascending=False).to_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t', mode='a', header=True, index=None)
         
@@ -392,7 +392,7 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
         df_out_p_new = multipletests(df_out_p, method='fdr_bh', is_sorted=False, returnsorted=False)
         df_out['-log10(FDR)'] = -np.log10(df_out_p_new[1])
         df_out['-log10(pvalue)'] = df_out['-log10(pvalue)_new']
-        df_out = df_out.loc[:,['reg1','reg2','-log10(pvalue)','-log10(FDR)']]
+        df_out = df_out.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)','-log10(FDR)']]
         
         os.remove(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed')
         df_out.to_csv(col_fore+'_specific_regions.bed', sep='\t', index=None, header=True)
