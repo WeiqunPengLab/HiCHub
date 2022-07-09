@@ -26,13 +26,13 @@ HicHub mainly depends on the Python scientific stack.
 
 ```
 python >=3
-pandas
-numpy
-pybedtools
-python-igraph
-scipy
-hic-straw
-statsmodels
+pandas = 1.4.3
+numpy = 1.23.0
+pybedtools = 0.9.0
+python-igraph = 0.9.11
+scipy = 1.8.1
+hic-straw = 1.3.1
+statsmodels = 0.13.2
 ```
 
 ## Installation Guide
