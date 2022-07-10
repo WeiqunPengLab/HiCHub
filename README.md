@@ -28,11 +28,13 @@ HicHub mainly depends on the Python scientific stack.
 python >=3
 pandas = 1.4.3
 numpy = 1.23.0
+bedtool >= 2.70.1
 pybedtools = 0.9.0
 python-igraph = 0.9.11
 scipy = 1.8.1
 hic-straw = 1.3.1
 statsmodels = 0.13.2
+pycairo >= 1.11.0
 ```
 
 ## Installation Guide
@@ -45,6 +47,9 @@ sudo apt-get install bedtools
 ```
 ```
 pip install pybedtools
+```
+```
+pip install pycairo
 ```
 ```
 pip install scipy
