@@ -56,7 +56,7 @@ def revise2(PATH, promoter_name):
 def revise3():
     test = pd.read_csv('ATAC_combine.bed', sep='\t')
 
-    test['signal'] = test['singal']#.apply(lambda x: 'up' if x >= 0 else('down'))
+    test['signal'] = test['signal']#.apply(lambda x: 'up' if x >= 0 else('down'))
     test['start'] = test['start'].astype(int)
     test['end'] = test['end'].astype(int)
     test = test.loc[:,['#chr','start','end','signal']]
