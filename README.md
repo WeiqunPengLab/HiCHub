@@ -181,9 +181,9 @@ hichub  asso -i [run path] -l [label you have used before] -p [the files contain
 (The empty between two labels is tab.)  
   
  -f : Optional. The name of the file that contains information about another factor, such as DNase, CTCF ....
-      The input format shows as following, where logFC represents the log2FC, the log2 foldchange of your input factors in two situations.   
+      The input format shows as following, where signal represents if your factor's count is increasing or decreasing between two situation, if in situation label1 larger than label2, please mark them as 'up', if in situation label2 larger than label1, please mark them as 'down', if not change, please mark them as number 0. The label1 and label2 represent the counts of your factor in the given regions.   
 ```
-#chr    start    end    label1    label2     logFC  
+#chr    start    end    label1    label2     signal  
 ```  
 (The empty between two labels is tab.)  
  
