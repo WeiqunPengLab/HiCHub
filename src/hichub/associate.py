@@ -27,7 +27,7 @@ def revise1(attach_name, PATH):
     test1['start'] = test1['mid']
     test1['end'] = test1['mid']+1
 
-    test1 = test1.loc[:,['#chr','start','end','logFC']]
+    test1 = test1.loc[:,['#chr','start','end','signal']]
 
     test1.to_csv('ATAC_combine.bed', sep='\t', index=None)
     return None
@@ -56,7 +56,7 @@ def revise2(PATH, promoter_name):
 def revise3():
     test = pd.read_csv('ATAC_combine.bed', sep='\t')
 
-    test['signal'] = test['logFC'].apply(lambda x: 'up' if x >= 0 else('down'))
+    test['signal'] = test['singal']#.apply(lambda x: 'up' if x >= 0 else('down'))
     test['start'] = test['start'].astype(int)
     test['end'] = test['end'].astype(int)
     test = test.loc[:,['#chr','start','end','signal']]
