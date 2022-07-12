@@ -392,10 +392,10 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
         df_out_p_new = multipletests(df_out_p, method='fdr_bh', is_sorted=False, returnsorted=False)
         df_out['-log10(FDR)'] = -np.log10(df_out_p_new[1])
         df_out['-log10(pvalue)'] = df_out['-log10(pvalue)_new']
-        df_out = df_out.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)','-log10(FDR)']]
+        df_out = df_out.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)']]#,'-log10(FDR)']]
         
         os.remove(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed')
-        df_out.to_csv(col_fore+'_specific_regions.bed', sep='\t', index=None, header=True)
+        df_out.to_csv(col_fore+'_specific_hubs.bed', sep='\t', index=None, header=True)
         
         os.remove(col_back+'_'+col_fore+'_specific_regions.bed')
         
