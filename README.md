@@ -113,11 +113,12 @@ hichub convert -i /mnt/d/test -f H1ESC.hic,HFFc6.hic -l H1ESC,HFFc6 -r 10000
 ```
 
 The output is a (.txt) format files which contains the contact matrics of two (.hic) files in the format:  
-  
+
 ```
 #chr    bin1    bin2    label1    label2
 ```
-
+(The empty between two labels is tab.)  
+  
 For example (the output of test data):   
 ```
 #chr    bin1    bin2    H1ESC    HFFc6  
@@ -153,9 +154,11 @@ There are four output files.
 (3) --- 'cluster_H1ESC.txt'  
 (4) --- 'cluster_HFFc6.txt'
 
-(1) and (2) contain the cell-type-specific hubs we found.   
-Format: left_hub_anchor ---- right_hub_anchor ---- -log10(pvalue)  
-
+(1) and (2) contain the cell-type-specific hubs we found. The format of output file (hubs) is:  
+```
+left_hub_anchor    right_hub_anchor    -log10(pvalue)  
+```
+(The empty between two labels is tab.)  
   
 (3) and (4) record the cluster information we used to call hubs, they are use for drawing the network plot in the following functions.  
   
@@ -175,12 +178,14 @@ hichub  asso -i [run path] -l [label you have used before] -p [the files contain
 ```
 #chr    start    end    gene_name
 ```     
+(The empty between two labels is tab.)  
   
  -f : Optional. The name of the file that contains information about another factor, such as DNase, CTCF ....
       The input format shows as following, where logFC represents the log2FC, the log2 foldchange of your input factors in two situations.   
 ```
 #chr    start    end    label1    label2     logFC  
 ```  
+(The empty between two labels is tab.)  
  
 For example:  
 ```
