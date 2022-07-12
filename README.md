@@ -106,7 +106,7 @@ hichub convert -i [run path] -f [file names, seperate with ','] -l [label of out
  -l : Your output files' labels, name your two input files with the same order, seperate them with comma. For example '-l H1ESC,HFFc6'.  
  -r : The length for one bin on genome , the unit is 'bp'. For example '-r 10000'.  
 
-For example:
+For example: (The test data may takes you around 2 mins to finish.)  
 
 ```
 hichub convert -i /mnt/d/test -f H1ESC.hic,HFFc6.hic -l H1ESC,HFFc6 -r 10000
@@ -119,7 +119,7 @@ The output is a (.txt) format files which contains the contact matrics of two (.
 ```
 (The empty between two labels is tab.)  
   
-For example (the output of test data):   
+For example (the output of test data):  
 ```
 #chr    bin1    bin2    H1ESC    HFFc6  
 ```
@@ -141,7 +141,7 @@ hichub diff -i [yout (.txt) file's name] -l [label you have used before] -r [res
  -d : Optional default = 1.0, the threshold to determine whether we keep an edge in cluster analysis, the details could be seen in the paper.  
  -p : Optional default = 0.00001, The threshold to pick hubs smaller than a certain p-value.  
 
-For example:
+For example: (The test data may takes you around 4 mins to finish.)  
 ```
 hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000
 ```
@@ -187,7 +187,7 @@ hichub  asso -i [run path] -l [label you have used before] -p [the files contain
 ```  
 (The empty between two labels is tab.)  
  
-For example:  
+For example: (The test data may takes you around 1 mins to finish.)  
 ```
 hichub asso -i /mnt/d/test -l H1ESC,HFFc6 -p promoter.bed
 ```
@@ -215,7 +215,7 @@ hichub plot -i [yout (.txt) file's name] -l [label you have used before] -p [the
  
 The result will contain the network plot for gene you entered.   
 If this gene is not in any hub, you will received the hint that : 'The 'gene_name' does not exist in any hubs.'  
-For example:  
+For example: (The test data may takes you around 3 mins to finish.)  
 ```
 hichub plot -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -p promoter.bed -n CPTP
 ```
