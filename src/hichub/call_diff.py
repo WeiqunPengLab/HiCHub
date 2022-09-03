@@ -371,15 +371,18 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
             df_hic_chr = df_group[1]
             structure = multi_task(chr_name, df_hic_chr, col_fore, col_back, resolution, _pvalue, logFC)
             
-            i = 0 
-            for graph_tem in structure[0].subgraphs():
-                df_test = convert_graph_vs_to_df(graph_tem)
-                df_test['cluster'] = 'cluster'+str(i)
-                df_test['node_chr'] = df_test['name'].str.split(':', expand = True)[0]
-                df_test['node_p'] = df_test['name'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
-                df_test = df_test.loc[:,['node_chr','node_p','cluster']]
-                df_test.to_csv('cluster_'+ col_fore +'.txt',sep='\t',index=None,mode='a', header = False)
-                i=i+1
+            i = 0
+            if structure is not None:
+                for graph_tem in structure[0].subgraphs():
+                    df_test = convert_graph_vs_to_df(graph_tem)
+                    df_test['cluster'] = 'cluster'+str(i)
+                    df_test['node_chr'] = df_test['name'].str.split(':', expand = True)[0]
+                    df_test['node_p'] = df_test['name'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+                    df_test = df_test.loc[:,['node_chr','node_p','cluster']]
+                    df_test.to_csv('cluster_'+ col_fore +'.txt',sep='\t',index=None,mode='a', header = False)
+                    i=i+1
+            else:
+                df_test = pd.DataFrame(data = {'node_chr':[],'node_p':[],'cluster':[]}).to_csv('cluster_'+ col_fore +'.txt',sep='\t',index=None,mode='a', header = False)
             
         print('All subprocesses done.')
 
@@ -389,8 +392,14 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
         
         df_out = pd.read_csv(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed', sep='\t')
         df_out_p = pow(10, -df_out['-log10(pvalue)_new'])
-        df_out_p_new = multipletests(df_out_p, method='fdr_bh', is_sorted=False, returnsorted=False)
-        df_out['-log10(FDR)'] = -np.log10(df_out_p_new[1])
+
+        if len(df_out) == 0:
+            df_out_p_new = []
+            df_out['-log10(FDR)'] = []
+        else:
+            df_out_p_new = multipletests(df_out_p, method='fdr_bh', is_sorted=False, returnsorted=False)
+            df_out['-log10(FDR)'] = -np.log10(df_out_p_new[1])
+            
         df_out['-log10(pvalue)'] = df_out['-log10(pvalue)_new']
         df_out = df_out.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)']]#,'-log10(FDR)']]
         
