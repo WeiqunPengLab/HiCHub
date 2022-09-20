@@ -138,8 +138,7 @@ hichub diff -i [yout (.txt) file's name] -l [label you have used before] -r [res
  -l : The labe you have used in the 'convert' step. For example: '-l H1ESC,HFFc6'  
  -r : The resolution you have used in the 'convert' step. For example: '-r 10000'  
  -c : Optional default = 10, remove the sum of two values of contact matric samller than a threshold. For example: '-c 10'.  
- -d : Optional default = 0, the difference to determine whether we keep an edge in cluster analysis (for example, the value of H1ESC-HFFc6 for H1ESC specific hubs),    
-      the details could be seen in the paper.  
+ -d : Optional default = 0, the difference to determine whether we keep an edge in cluster analysis. The details could be seen in the paper.  
  -p : Optional default = 0.00001, The threshold to pick hubs smaller than a certain p-value.  
 
 For example: (The test data may takes you around 4 mins to finish.)  
