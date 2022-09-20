@@ -198,8 +198,8 @@ def add_diff_parser( subparsers ):
 	diff_parser_group.add_argument("-r", "--resolution", action="store", type=int, required = True,
 		dest="res", help="Resolution of .hic files you converted before.", metavar="<int>")  
       
-	diff_parser_group.add_argument("-d", "--FC", action="store", type=float, default = 1.0,
-		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0.", metavar="<float>")
+	diff_parser_group.add_argument("-d", "--diff", action="store", type=float, default = 0,
+		dest="foldchange", help="Optional: difference to evaluate qualified difference, default=0.", metavar="<float>")
 	diff_parser_group.add_argument("-c", "--cut_off", action="store", type=float, default = 10,
 		dest="cut_off_value", help="Optional: Remove sum of row counts smaller than this value, default=10.", metavar="<float>")
 	diff_parser_group.add_argument("-p", "--pvalue", action="store", type=float, default = 0.00001,
