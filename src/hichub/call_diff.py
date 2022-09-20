@@ -28,7 +28,7 @@ def Norm_df_hic(_df_interaction,  _col_fore, _col_back, _resolution):
     if('logFC' in df_interaction.columns):
         df_interaction.loc[:,'log_FC'] = df_interaction.loc[:,'logFC']
     else:
-        df_interaction.loc[:,'log_FC'] = df_interaction.loc[:,col_fore] / df_interaction.loc[:,col_back]
+        df_interaction.loc[:,'log_FC'] = df_interaction.loc[:,col_fore] - df_interaction.loc[:,col_back]
     df_interaction = df_interaction.loc[:,['#chr1','x1','x2','chr2','y1','y2','log_FC', col_fore, col_back]]
     
     return df_interaction
@@ -464,8 +464,8 @@ def main(argv):
 	parser.add_option("-r", "--resolution", action="store", type="int",
 		dest="res", help="Resolution of .hic files you converted before.", metavar="<int>")  
       
-	parser.add_option("-d", "--FC", action="store", type="float", default = 1.0,
-		dest="foldchange", help="Optional: FC to evaluate qualified difference, default=1.0.", metavar="<float>")
+	parser.add_option("-d", "--diff", action="store", type="float", default = 0,
+		dest="foldchange", help="Optional: difference to evaluate qualified difference, default=0.", metavar="<float>")
 	parser.add_option("-c", "--cut_off", action="store", type="float", default = 10,
 		dest="cut_off_value", help="Optional: Remove sum of row counts smaller than this value, default=10.", metavar="<float>")
 	parser.add_option("-p", "--pvalue", action="store", type="float", default =0.00001,
