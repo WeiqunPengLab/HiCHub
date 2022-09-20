@@ -146,7 +146,7 @@ For example: (The test data may takes you around 4 mins to finish.)
 hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000
 ```
 ```
-hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000 -c 10 -d 1 -p 0.00001
+hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000 -c 10 -d 0 -p 0.00001
 ```
 There are four output files.    
 (1) --- 'H1ESC_specific_hubs.bed'  
