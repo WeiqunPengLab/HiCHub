@@ -35,9 +35,9 @@ def revise_hub(hubs):
 
     #stripe_2 = pd.DataFrame()
     z = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
-    stripe_2 = pd.DataFrame(data={'0':z.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
-                                  '1':z.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
-                                  '2':z.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+    stripe_2 = pd.DataFrame(data={'0':z.loc[:,'right_hub_anchor'].str.split(':', expand = True)[0],
+                                  '1':z.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                  '2':z.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
                                   'left_hub_anchor':z.loc[:,'left_hub_anchor'],
                                   'right_hub_anchor':z.loc[:,'right_hub_anchor'],
                                   '-log10(pvalue)':z.loc[:,'-log10(pvalue)']})
