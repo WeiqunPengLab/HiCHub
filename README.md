@@ -137,6 +137,7 @@ hichub diff -i [yout (.txt) file's name] -l [label you have used before] -r [res
  -i : Your converted (.txt) file's name from the 'convert' step. For example: '-i Summary_H1ESC_HFFc6_Dense_Matrix.txt'  
  -l : The labe you have used in the 'convert' step. For example: '-l H1ESC,HFFc6'  
  -r : The resolution you have used in the 'convert' step. For example: '-r 10000'  
+ -n : Optional default = 'LOESS', please choose normalization method from 'LOESS' or 'Dis_LOESS'(doing LOESS normalizaiton at each distance). The details could be   seen in the paper.  
  -c : Optional default = 10, remove the sum of two values of contact matric samller than a threshold. For example: '-c 10'.  
  -d : Optional default = 0, the difference to determine whether we keep an edge in cluster analysis. The details could be seen in the paper.  
  -p : Optional default = 0.00001, The threshold to pick hubs smaller than a certain p-value.  
@@ -146,7 +147,7 @@ For example: (The test data may takes you around 4 mins to finish.)
 hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000
 ```
 ```
-hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000 -c 10 -d 0 -p 0.00001
+hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -n Dis_LOESS -r 10000 -c 10 -d 0 -p 0.00001
 ```
 There are four output files.    
 (1) --- 'H1ESC_specific_hubs.bed'  
