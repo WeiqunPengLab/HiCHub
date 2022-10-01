@@ -132,7 +132,7 @@ Where, '#chr', 'bin1', 'bin2' represent the chromosome, the location of the left
 When you converted two (.hic) files into the (.txt) format by command 'convert', you can use command 'diff' to call hubs.
 
 ```
-hichub diff -i [yout (.txt) file's name] -l [label you have used before] -r [resolution of bin] -c [optional, cut-off threshold] -d [optional, folde change threshold] -p [optional, p-value threshold]
+hichub diff -i [yout (.txt) file's name] -l [label you have used before] -r [resolution of bin] -c [optional, cut-off threshold] -d [optional, folde change threshold] -p [optional, p-value threshold] -n [optional, normalization method]
 ```
  -i : Your converted (.txt) file's name from the 'convert' step. For example: '-i Summary_H1ESC_HFFc6_Dense_Matrix.txt'  
  -l : The labe you have used in the 'convert' step. For example: '-l H1ESC,HFFc6'  
