@@ -520,8 +520,8 @@ def run(argv):
 	print (" ")
 	
 #### Main 
-	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off)		
-	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off)
+	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)		
+	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off, norm)
 
 
 	print(" ")
