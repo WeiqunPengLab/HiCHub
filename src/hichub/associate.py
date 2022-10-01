@@ -243,7 +243,7 @@ def main(argv):
 		promoter_path = 'promoter_illusion.bed'
 		e = 1
 	if other_path == 'no_123':
-		d = pd.DataFrame(data={'#chr':[],'start':[],'end':[],col_fore:[],col_back:[],'logFC':[]})
+		d = pd.DataFrame(data={'#chr':[],'start':[],'end':[],col_fore:[],col_back:[],'signal':[]})
 		d.to_csv(PATH_INPUT + 'other_illusion.bed', sep='\t', index=None)
 		other_path = 'other_illusion.bed'
 		f = 1
