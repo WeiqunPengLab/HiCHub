@@ -207,7 +207,9 @@ def add_diff_parser( subparsers ):
 		
 	diff_parser_group.add_argument("-t", "--num_threads", action="store", type=int, default = 1,
 		dest="thread", help="Optional: Number of threads to run, default=1.", metavar="<int>")
-	
+    
+	diff_parser_group.add_argument("-n", "--normalization_method", action="store", type=str, default = 'LOESS',
+		dest="norm_method", help="Normalization method.", metavar="<str>")
 	return
 
 def add_asso_parser( subparsers ):
