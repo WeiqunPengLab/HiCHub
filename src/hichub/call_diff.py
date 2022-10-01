@@ -10,6 +10,76 @@ import copy
 from statsmodels.stats.multitest import multipletests
 
 random.seed(5)
+def Dis_df_hic(_df_interaction,  _col_fore, _col_back, _resolution):
+    col_fore = _col_fore
+    col_back  = _col_back
+    resolution = _resolution
+    _df_interaction = _df_interaction.fillna(0)
+    
+
+    col1 = _col_fore
+    col2 = _col_back
+    hic_merge = _df_interaction
+    hic_merge['distance'] = (hic_merge['bin2'] - hic_merge['bin1'])/10**4        
+    hic_norm = pd.DataFrame(columns=['#chr','bin1','bin2',col1,col2])
+    hic_norm_group = hic_merge.groupby('distance')
+    for hic_norm_subgroup in hic_norm_group:
+        hic_norm_test = hic_norm_subgroup[1]
+        hic_norm_test = Distance_Loess_Norm(hic_norm_test, col1, col2)
+        hic_norm = pd.concat([hic_norm, hic_norm_test])
+            
+    df_interaction = hic_norm #LOESS_Norm_df(_df_interaction, col_fore, col_back)
+    df_interaction.loc[:,'#chr']=df_interaction.iloc[:,0].astype(str).replace('chr','')
+    df_interaction.loc[:,'#chr1']=df_interaction.iloc[:,0]
+    df_interaction.loc[:,'x1']=df_interaction.iloc[:,1].astype(int)
+    df_interaction.loc[:,'x2']=df_interaction.iloc[:,1].astype(int)+int(resolution)
+    df_interaction.loc[:,'chr2']=df_interaction.iloc[:,0]
+    df_interaction.loc[:,'y1']=df_interaction.iloc[:,2].astype(int)
+    df_interaction.loc[:,'y2']=df_interaction.iloc[:,2].astype(int)+int(resolution)
+        
+    if('logFC' in df_interaction.columns):
+        df_interaction.loc[:,'log_FC'] = df_interaction.loc[:,'logFC']
+    else:
+        df_interaction.loc[:,'log_FC'] = df_interaction.loc[:,col_fore] - df_interaction.loc[:,col_back]
+    df_interaction = df_interaction.loc[:,['#chr1','x1','x2','chr2','y1','y2','log_FC', col_fore, col_back]]
+    
+    return df_interaction
+
+def Distance_Loess_Norm(df_test, _col1, _col2):
+    distance = df_test['distance'].unique()[0]
+    
+    if(distance<=300):
+        df_test[_col1] = df_test[_col1] + 1
+        df_test[_col2] = df_test[_col2] + 1
+        n_bins = 100
+        df_test['A'] = 0.5*(np.log2(df_test[_col1]) + np.log2(df_test[_col2]))
+        A_min = df_test['A'].min()
+        A_max = df_test['A'].max()
+        df_out = pd.DataFrame()
+        
+        if A_min != A_max :
+            x = np.arange(A_min, A_max, (A_max-A_min)/n_bins)
+            for i in range(len(x)-1):
+                df_bbb = df_test[df_test['A']>=x[i]]
+                df_bbb = df_bbb[df_bbb['A']<=x[i+1]]
+                sum_1 = df_bbb[_col1].sum(axis=0)
+                sum_2 = df_bbb[_col2].sum(axis=0)
+                if(sum_1>0 and sum_2>0):
+                    df_bbb[_col2] = df_bbb[_col2]/sum_2*sum_1
+                df_out = pd.concat([df_out,df_bbb])
+            return df_out.loc[:,['#chr','bin1','bin2', _col1, _col2]]
+        else:
+            sum_1 = df_test[_col1].sum(axis=0)
+            sum_2 = df_test[_col2].sum(axis=0)
+            df_test[_col2] = df_test[_col2]/sum_2*sum_1
+            return df_test.loc[:,['#chr','bin1','bin2', _col1, _col2]]
+        
+    if(distance>300):
+        sum_1 = df_test[_col1].sum(axis=0)
+        sum_2 = df_test[_col2].sum(axis=0)
+        df_test[_col2] = df_test[_col2]/sum_2*sum_1
+        return df_test.loc[:,['#chr','bin1','bin2', _col1, _col2]]
+    
 
 def Norm_df_hic(_df_interaction,  _col_fore, _col_back, _resolution):
     col_fore = _col_fore
@@ -315,13 +385,20 @@ def count_number(df1,test):
         
     return pvalue_box
 
-def multi_task(_chr_name, _df_chr, _col_fore, _col_back,  _resolution, _pvalue, _logFC):
+def multi_task(_chr_name, _df_chr, _col_fore, _col_back,  _resolution, _pvalue, _logFC, norm):
     col_fore = _col_fore
     col_back = _col_back
     resolution = _resolution
     pvalue = _pvalue
     logFC = _logFC
-    df_chr = Norm_df_hic(_df_chr, col_fore, col_back, resolution)
+    if norm == 'LOESS':
+        df_chr = Norm_df_hic(_df_chr, col_fore, col_back, resolution)
+    elif norm == 'Dis_LOESS':
+        df_chr = Dis_df_hic(_df_chr, col_fore, col_back, resolution)
+    else:
+        print('Please enter one of the following two normalization method:')
+        print('1) LOESS')
+        print('2) Dis_LOESS')
     structure = Main_For_Diff_Regions(df_chr, col_fore, col_back, resolution, pvalue, logFC)
     
     return structure
@@ -342,7 +419,7 @@ def cut_off_value(_df_test, _value, _col1, _col2):
     
     return df_test
 
-def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resolution, _pvalue, _num_threads, _logFC, _cut_off):
+def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resolution, _pvalue, _num_threads, _logFC, _cut_off, norm):
     if True:
         PATH_interaction = _PATH_interaction
         
@@ -369,7 +446,7 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
         for df_group in df_groups:
             chr_name = df_group[0]
             df_hic_chr = df_group[1]
-            structure = multi_task(chr_name, df_hic_chr, col_fore, col_back, resolution, _pvalue, logFC)
+            structure = multi_task(chr_name, df_hic_chr, col_fore, col_back, resolution, _pvalue, logFC, norm)
             
             i = 0
             if structure is not None:
@@ -425,7 +502,7 @@ def run(argv):
 	logFC = argv.foldchange
 	cut_off = argv.cut_off_value
 	num_threads=argv.thread
-
+	norm = argv.norm_method
 	
 	print (" ")
 	#print("Run main")
@@ -434,6 +511,7 @@ def run(argv):
 	print ("First label is: %s" % col_fore)
 	print ("Second label is: %s" % col_back)
 	print ("Resolution is: %i" % resolution)
+	print ("Normalizaiton method is: %s" % norm)
 	print ("Pvalue cutoff for output (diff hub) is: %s" % pvalue)
 	print ("FC for qualified difference is: %s" % logFC)
 	print ("Threshold value for sum of row counts is: %s" % cut_off)
@@ -474,6 +552,9 @@ def main(argv):
 	
 	parser.add_option("-t", "--num_threads", action="store", type="int", default =1,
 		dest="thread", help="Optional: Number of threads to run, default=1.", metavar="<int>")
+    
+	parser.add_option("-n", "--normalization_method", action="store", type="str", default = 'LOESS',
+		dest="norm_method", help="Normalization method.", metavar="<str>")
 
 	(opt, args) = parser.parse_args(argv)
 	if len(argv) < 3:
@@ -491,7 +572,8 @@ def main(argv):
 	logFC = opt.foldchange
 	cut_off = opt.cut_off_value
 	num_threads=opt.thread
-
+	norm = opt.norm_method
+    
 	print (" ")
 	#print("Run main")
 	print ("Here is the Summary of your input.")
@@ -499,6 +581,9 @@ def main(argv):
 	print ("First label is: %s" % col_fore)
 	print ("Second label is: %s" % col_back)
 	print ("Resolution is: %i" % resolution)
+    
+	print ("Normalizaiton method is: %s" % norm)
+    
 	print ("Pvalue cutoff for output (diff hub) is: %s" % pvalue)
 	print ("FC for qualified difference is: %s" % logFC)
 	print ("Threshold value for sum of row counts is: %s" % cut_off)
@@ -509,8 +594,8 @@ def main(argv):
 
 
 #### Main 
-	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off)   
-	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off)
+	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)   
+	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off, norm)
 
 	
 	print(" ")
