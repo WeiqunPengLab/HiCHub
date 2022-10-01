@@ -1,4 +1,4 @@
-Latest updated on 07/09/2022,
+Latest updated on 01/10/2022,
 
 # Comprehensive Network Analysis for HiC
 
