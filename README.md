@@ -104,7 +104,8 @@ hichub convert -i [run path] -f [file names, seperate with ','] -l [label of out
  -i : Your input path, the directory that you strore your two (.hic) files, the directory that you run the HicHub program.  
  -f : Your input file names, seperate them with comma. For example '-f H1ESC.hic,HFFc6.hic'.  
  -l : Your output files' labels, name your two input files with the same order, seperate them with comma. For example '-l H1ESC,HFFc6'.  
- -r : The length for one bin on genome , the unit is 'bp'. For example '-r 10000'.  
+ -r : The length for one bin on genome , the unit is 'bp'. For example '-r 10000'. 
+ -n : (optional, default='NONE'), the normalizaition method for converting .hic files, consistent with the method provided by hic-straw. 'NONE' for no normalization and 'KR' for KR normalization.
 
 For example: (The test data may takes you around 2 mins to finish.)  
 
