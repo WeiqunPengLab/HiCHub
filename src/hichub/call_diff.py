@@ -479,7 +479,10 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
             
         df_out['-log10(pvalue)'] = df_out['-log10(pvalue)_new']
         df_out = df_out.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)','-log10(FDR)']]
-        
+        df_out['haha'] = df_out['left_hub_anchor']
+        df_out['left_hub_anchor'] = df_out['right_hub_anchor']
+        df_out['right_hub_anchor'] = df_out['haha']
+        df_out = df_out.loc[:,['left_hub_anchor','right_hub_anchor','-log10(pvalue)','-log10(FDR)']]
         os.remove(str(len(df_output))+'_'+str(logFC)+'_'+col_back+'_'+col_fore+'_specific_regions.bed')
         df_out.to_csv(col_fore+'_specific_hubs.bed', sep='\t', index=None, header=True)
         
