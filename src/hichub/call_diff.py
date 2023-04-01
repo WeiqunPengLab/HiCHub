@@ -313,7 +313,8 @@ def Main_For_Diff_Regions(df_hic, _col_fore, _col_back,  _resolution, _pvalue, _
         df_out.to_csv(_col_back+'_'+_col_fore+'_specific_regions.bed', sep='\t', mode='a', header=False, index=None)
         return None
     i=0
-    for graph_tem in structure[0].subgraphs():
+    sub_structure = structure[0].subgraphs()
+    for graph_tem in sub_structure:
         if (len(graph_tem.vs)>_gapsize+1):
             i+=1
             df_hubs = Stich_Region_Above_global_Mean(graph_tem, _resolution, _gapsize, cut_off)
@@ -489,6 +490,20 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
         os.remove(col_back+'_'+col_fore+'_specific_regions.bed')
         
     return None
+
+def revise_output_format(state):
+    input_file = pd.read_csv(state+'_specific_hubs.bed', sep='\t')
+    
+    input_file['#chr'] = input_file['left_hub_anchor'].str.split(':', expand = True)[0]
+    input_file['left_hub_anchor_start'] = input_file['left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    input_file['left_hub_anchor_end'] = input_file['left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    input_file['right_hub_anchor_start'] = input_file['right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
+    input_file['right_hub_anchor_end'] = input_file['right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
+    input_file = input_file.loc[:,['#chr', 'left_hub_anchor_start', 'left_hub_anchor_end', 'right_hub_anchor_start', 'right_hub_anchor_end', '-log10(pvalue)','-log10(FDR)']]
+    input_file.to_csv(state+'_specific_hubs.bed', sep='\t', index=None, header=True)
+    
+    return None
+
 ### End of Visulization
 ####################################################################################
 ### FUNCTION
@@ -524,7 +539,9 @@ def run(argv):
 	
 #### Main 
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)		
+	revise_output_format(col_fore)
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off, norm)
+	revise_output_format(col_back)
 
 
 	print(" ")
@@ -597,8 +614,10 @@ def main(argv):
 
 
 #### Main 
-	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)   
+	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)		
+	revise_output_format(col_fore)
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off, norm)
+	revise_output_format(col_back)
 
 	
 	print(" ")

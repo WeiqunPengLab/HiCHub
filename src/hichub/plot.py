@@ -94,6 +94,8 @@ def find_hub(gene_name, input_path, file_name, file_label):
     k=0
     for i in range(len(file_name)):
         hub = pd.read_csv(file_name[i], sep='\t')
+        hub = revise_input_file(hub)
+        print(hub)
         hub = revise_hub(hub)
         hub = hub[hub['0'] == chrom]
         hub = hub[hub['1'] <= start]
@@ -320,7 +322,13 @@ def find_cluster(input_path, cluster_path, gene_name, fore_name, back_name, FC, 
     
     plot_igragh(edges_input, cluster_input, gene_name)
     return None
-    
+
+def revise_input_file(state):
+    input1 = state#pd.read_csv(state+'_specific_hubs.bed', sep='\t')
+    input1['left_hub_anchor'] = input1['#chr'].astype(str) + ':' + input1['left_hub_anchor_start'].astype(str) + '-' + input1['left_hub_anchor_end'].astype(str)
+    input1['right_hub_anchor'] = input1['#chr'].astype(str) + ':' + input1['right_hub_anchor_start'].astype(str) + '-' + input1['right_hub_anchor_end'].astype(str)
+    input1 = input1.loc[:,['left_hub_anchor', 'right_hub_anchor', '-log10(pvalue)', '-log10(FDR)']]
+    return input1        
     
 
 ####################################################################################
