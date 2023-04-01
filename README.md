@@ -151,8 +151,8 @@ hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -r 10000
 hichub diff -i Summary_H1ESC_HFFc6_Dense_Matrix.txt -l H1ESC,HFFc6 -n Dis_LOESS -r 10000 -c 10 -d 0 -p 0.00001
 ```
 There are four output files.    
-(1) --- 'H1ESC_specific_hubs.bed'  
-(2) --- 'HFFc6_specific_hubs.bed'  
+(1) --- 'H1ESC_specific_hubs_comparing_with_HFFc6.bed'  
+(2) --- 'HFFc6_specific_hubs_comparing_with_H1ESC.bed'  
 (3) --- 'cluster_H1ESC.txt'  
 (4) --- 'cluster_HFFc6.txt'
 
