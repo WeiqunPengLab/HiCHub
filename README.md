@@ -158,7 +158,7 @@ There are four output files.
 
 (1) and (2) contain the cell-type-specific hubs we found. The format of output file (hubs) is:  
 ```
-left_hub_anchor    right_hub_anchor    -log10(pvalue)  
+#chr    left_hub_anchor_start    left_hub_anchor_end    right_hub_anchor_start    right_hub_anchor_end    -log10(pvalue)    -log10(FDR)  
 ```
 (The empty between two labels is tab.)  
   
