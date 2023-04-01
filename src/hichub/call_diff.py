@@ -491,7 +491,7 @@ def Multi_Main_For_Diff_Regions(_PATH_interaction, _col_fore, _col_back,  _resol
         
     return None
 
-def revise_output_format(state):
+def revise_output_format(state,name):
     input_file = pd.read_csv(state+'_specific_hubs.bed', sep='\t')
     
     input_file['#chr'] = input_file['left_hub_anchor'].str.split(':', expand = True)[0]
@@ -500,8 +500,8 @@ def revise_output_format(state):
     input_file['right_hub_anchor_start'] = input_file['right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
     input_file['right_hub_anchor_end'] = input_file['right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
     input_file = input_file.loc[:,['#chr', 'left_hub_anchor_start', 'left_hub_anchor_end', 'right_hub_anchor_start', 'right_hub_anchor_end', '-log10(pvalue)','-log10(FDR)']]
-    input_file.to_csv(state+'_specific_hubs.bed', sep='\t', index=None, header=True)
-    
+    input_file.to_csv(state+'_specific_hubs_comparing_with_'+name+'.bed', sep='\t', index=None, header=True)
+    os.remove(state+'_specific_hubs.bed')
     return None
 
 ### End of Visulization
@@ -615,9 +615,9 @@ def main(argv):
 
 #### Main 
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)		
-	revise_output_format(col_fore)
+	revise_output_format(col_fore, col_back)
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off, norm)
-	revise_output_format(col_back)
+	revise_output_format(col_back, col_fore)
 
 	
 	print(" ")

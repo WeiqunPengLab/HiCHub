@@ -364,7 +364,7 @@ def run(opt):
 
 #### Main
 	for sub_name in gene:
-		File_Name_Sets = [col_fore+'_specific_hubs.bed', col_back+'_specific_hubs.bed']
+		File_Name_Sets = [col_fore+'_specific_hubs_comparing_with_'+col_back+'.bed', col_back+'_specific_hubs_comparing_with_'+col_fore+'.bed']
 		File_Label_Sets = [col_fore,col_back]
 		#print(File_Label_Sets)
 		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
@@ -437,7 +437,7 @@ def main(argv):
 
 #### Main
 	for sub_name in gene:
-		File_Name_Sets = [col_fore+'_specific_hubs.bed', col_back+'_specific_hubs.bed']
+		File_Name_Sets = [col_fore+'_specific_hubs_comparing_with_'+col_back+'.bed', col_back+'_specific_hubs_comparing_with_'+col_fore+'.bed']
 		File_Label_Sets = [col_fore,col_back]
 		#print(File_Label_Sets)
 		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
