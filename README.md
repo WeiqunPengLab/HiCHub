@@ -167,7 +167,7 @@ There are four output files.
 <img src="image/4.png" width="800">
   
 ### 'asso'
-This function associate genome annotation (gene, open chromatin) with network clusters. 
+This function associate genome annotation (gene, open chromatin) with network clusters. This function is a mid-step of producing the cluster plot in the final step. You can get everything you need for hubs in "diff" step if you don't need a culster plot.
   
 In the '~/test' folder, there are also two test files named 'promoter.bed' and 'DNase.bed' containing the information of gene promoter and DNase for the test data.  
   
