@@ -197,9 +197,9 @@ hichub asso -i /mnt/d/test -l H1ESC,HFFc6 -p promoter.bed
 hichub asso -i /mnt/d/test -l H1ESC,HFFc6 -p promoter.bed -f DNase.bed
 ```
 The ouput is the files with name "cluster_annotated_H1ESC.txt" and "cluster_annotated_H1ESC.txt". They associate the gene with the cluster nodes.
-```
+
 The first three columns of the output files are the coordinates of each node. The forth column ("cluster") marks which cluster this node belongs to. The fifth column ("gene_id") records if there are any gene include in this node. If there are no gene in this node, it will record the "0". If there are multi-gene in this node, their names will be seperated by ",". The sixth column "signal" depands on which kind of input file you choose for "-f" option. It will give you "up" (for increasing the expresstion), "down" (for decreasing the expresstion) or "0" (for does not change).
-```
+
 <img src="image/5.png" width="800">
   
 ### 'plot'
