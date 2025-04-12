@@ -96,7 +96,7 @@ def Multi_Input_Matrix_to_Txt(_Norm, _hics, _conds, _resolution):
                 if len(df_hic_tem) != 0:
                     df_hic = df_hic.merge(df_hic_tem, on=['bin1','bin2'], how='outer')
                 else:
-                    df_hic_tem = pd.DataFrame(columns={'bin1','bin2',cond})
+                    df_hic_tem = pd.DataFrame(columns=['bin1', 'bin2', cond])
                     df_hic = df_hic.merge(df_hic_tem, on=['bin1','bin2'], how='outer')
                 
             df_hic.insert(loc=0, column='#chr', value=chr_idx)

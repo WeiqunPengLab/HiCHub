@@ -539,9 +539,9 @@ def run(argv):
 	
 #### Main 
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_fore, col_back, resolution, pvalue, num_threads, logFC, cut_off, norm)		
-	revise_output_format(col_fore)
+	revise_output_format(col_fore, col_back)
 	Multi_Main_For_Diff_Regions(PATH_INPUT, col_back, col_fore, resolution, pvalue, num_threads, logFC, cut_off, norm)
-	revise_output_format(col_back)
+	revise_output_format(col_back, col_fore)
 
 
 	print(" ")
