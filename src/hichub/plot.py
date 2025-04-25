@@ -14,6 +14,7 @@ def revise_hub(hubs):
     #df_test = df_test[df_test['-log10(pvalue)']>20]
     
     #pyramid = pd.DataFrame()
+    
     x = df_test[df_test['left_hub_anchor'] == df_test['right_hub_anchor']]
     pyramid = pd.DataFrame(data={'0':x.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
                                  '1':x.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
@@ -23,24 +24,40 @@ def revise_hub(hubs):
                                  '-log10(pvalue)':x.loc[:,'-log10(pvalue)']})
 
     y = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
-    stripe_1 = pd.DataFrame(data={'0':y.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
-                                  '1':y.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
-                                  '2':y.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
-                                  'left_hub_anchor':y.loc[:,'left_hub_anchor'],
-                                  'right_hub_anchor':y.loc[:,'right_hub_anchor'],
-                                  '-log10(pvalue)':y.loc[:,'-log10(pvalue)']})
+    if len(y) !=0:
+        stripe_1 = pd.DataFrame(data={'0':y.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0],
+                                      '1':y.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                      '2':y.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                     'left_hub_anchor':y.loc[:,'left_hub_anchor'],
+                                     'right_hub_anchor':y.loc[:,'right_hub_anchor'],
+                                      '-log10(pvalue)':y.loc[:,'-log10(pvalue)']})
+    else:
+        stripe_1 = pd.DataFrame(data={'0':[],
+                                      '1':[],
+                                      '2':[],
+                                     'left_hub_anchor':[],
+                                     'right_hub_anchor':[],
+                                      '-log10(pvalue)':[]})        
     #stripe_1['0'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand = True)[0]
     #stripe_1['1'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
     #stripe_1['2'] = stripe_1.loc[:,'left_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
 
     #stripe_2 = pd.DataFrame()
     z = df_test[df_test['left_hub_anchor'] != df_test['right_hub_anchor']]
-    stripe_2 = pd.DataFrame(data={'0':z.loc[:,'right_hub_anchor'].str.split(':', expand = True)[0],
-                                  '1':z.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
-                                  '2':z.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
-                                  'left_hub_anchor':z.loc[:,'left_hub_anchor'],
-                                  'right_hub_anchor':z.loc[:,'right_hub_anchor'],
-                                  '-log10(pvalue)':z.loc[:,'-log10(pvalue)']})
+    if len(z) !=0:
+        stripe_2 = pd.DataFrame(data={'0':z.loc[:,'right_hub_anchor'].str.split(':', expand = True)[0],
+                                    '1':z.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int),
+                                    '2':z.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int),
+                                    'left_hub_anchor':z.loc[:,'left_hub_anchor'],
+                                    'right_hub_anchor':z.loc[:,'right_hub_anchor'],
+                                    '-log10(pvalue)':z.loc[:,'-log10(pvalue)']})
+    else:
+        stripe_2 = pd.DataFrame(data={'0':[],
+                                      '1':[],
+                                      '2':[],
+                                     'left_hub_anchor':[],
+                                     'right_hub_anchor':[],
+                                      '-log10(pvalue)':[]})
     #stripe_2['0'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand = True)[0]
     #stripe_2['1'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[0].astype(int)
     #stripe_2['2'] = stripe_2.loc[:,'right_hub_anchor'].str.split(':', expand=True)[1].str.split('-', expand=True)[1].astype(int)
@@ -79,9 +96,9 @@ def revise_hub(hubs):
     #total.to_csv('top_H1ESC_regions.bed', sep = '\t', index = None)
     return total
 
-def find_hub(gene_name, input_path, file_name, file_label):
+def find_hub(gene_name, input_path, file_name, file_label, promoter_path):
     
-    promoter = pd.read_csv('promoter.bed', sep='\t')
+    promoter = pd.read_csv(promoter_path, sep='\t')
     
     promoter = promoter[promoter['gene_id'] == gene_name]
     if len(promoter) == 1:
@@ -95,7 +112,7 @@ def find_hub(gene_name, input_path, file_name, file_label):
     for i in range(len(file_name)):
         hub = pd.read_csv(file_name[i], sep='\t')
         hub = revise_input_file(hub)
-        print(hub)
+        #print(hub)
         hub = revise_hub(hub)
         hub = hub[hub['0'] == chrom]
         hub = hub[hub['1'] <= start]
@@ -367,7 +384,7 @@ def run(opt):
 		File_Name_Sets = [col_fore+'_specific_hubs_comparing_with_'+col_back+'.bed', col_back+'_specific_hubs_comparing_with_'+col_fore+'.bed']
 		File_Label_Sets = [col_fore,col_back]
 		#print(File_Label_Sets)
-		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
+		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets, promoter_path)
 
 		if result1 != 'x':
 			cluster = 'cluster_annotated_'+ File_Label_Sets[result1] + '.txt'
@@ -440,7 +457,7 @@ def main(argv):
 		File_Name_Sets = [col_fore+'_specific_hubs_comparing_with_'+col_back+'.bed', col_back+'_specific_hubs_comparing_with_'+col_fore+'.bed']
 		File_Label_Sets = [col_fore,col_back]
 		#print(File_Label_Sets)
-		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets)
+		result1 = find_hub(sub_name, 'no_need', File_Name_Sets, File_Label_Sets, promoter_path)
 
 		if result1 != 'x':
 			cluster = 'cluster_annotated_'+ File_Label_Sets[result1] + '.txt'
