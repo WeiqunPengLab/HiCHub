@@ -321,8 +321,11 @@ def Main_For_Diff_Regions(df_hic, _col_fore, _col_back,  _resolution, _pvalue, _
             if(len(df_hubs)>0):
                 Diff_matrix = Return_Sorted_Adjacency_Matrix(graph_tem, 'diff')
                 Diff_matrix = Diff_matrix.where(np.tril(np.ones(Diff_matrix.shape)).astype(bool))
-                df_out = pd.concat([df_out,Return_Pvalue_For_Given_Graph(df_hubs, _resolution, Diff_matrix)],axis=0)#df_out.append(Return_Pvalue_For_Given_Graph(df_hubs, _resolution, Diff_matrix))
-                
+                temp = Return_Pvalue_For_Given_Graph(df_hubs, _resolution, Diff_matrix)
+                if len(temp)>0:
+                    df_out = pd.concat([df_out,temp],axis=0)
+                # df_out = pd.concat([df_out,Return_Pvalue_For_Given_Graph(df_hubs, _resolution, Diff_matrix)],axis=0)#df_out.append(Return_Pvalue_For_Given_Graph(df_hubs, _resolution, Diff_matrix))
+                 
     #data_ori = revise_data_format(df_hic, _col_fore, _col_back)
     df_test = copy.deepcopy(df_out)
     p_value_new = re_calculate_pvalue(df_test, data_ori)
